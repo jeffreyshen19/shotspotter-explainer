@@ -17,8 +17,13 @@
   },
   "homepage": "https://github.com/jeffreyshen19/shotspotter-explainer#readme",
   "dependencies": {
+    "@babel/core": "^7.15.0",
+    "@babel/preset-env": "^7.15.0",
+    "babel": "^6.23.0",
     "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
     "gulp-minify": "^3.1.0",
-    "gulp-sass": "^5.0.0"
+    "gulp-sass": "^5.0.0",
+    "gulp-util": "^3.0.8"
   }
 }
