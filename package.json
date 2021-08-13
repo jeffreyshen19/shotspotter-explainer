@@ -20,10 +20,14 @@
     "@babel/core": "^7.15.0",
     "@babel/preset-env": "^7.15.0",
     "babel": "^6.23.0",
+    "babel-preset-minify": "^0.5.1",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
     "gulp-minify": "^3.1.0",
+    "gulp-pug": "^5.0.0",
     "gulp-sass": "^5.0.0",
-    "gulp-util": "^3.0.8"
+    "gulp-util": "^3.0.8",
+    "gulp-webserver": "^0.9.1",
+    "node-sass": "^6.0.1"
   }
 }
