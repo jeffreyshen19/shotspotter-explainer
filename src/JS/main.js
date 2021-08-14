@@ -55,6 +55,8 @@ var scrollVis = function () {
       attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
     }).addTo(map);
 
+    L.geoJSON(data.kcBoundaries).addTo(map);
+
     // histogramData = data.histogramData;
     //
     // // Add histogram
@@ -284,109 +286,107 @@ var scrollVis = function () {
   return chart;
 };
 
-// Load data, then display
-// d3.json("/data/la-shade/census-tracts-2012.geojson")
-//   .then(function(data){ // Process data
-//     let histogramData = [[], [], []]; // Store the tree canopy cover, broken down by the median income of census tracts (lower, middle, upper income)
-//
-//     data.features.forEach(function(d){
-//       let treePercent = parseFloat(d.properties["TREE-PCT"]),
-//           medianIncome = parseInt(d.properties["median-income"]);
-//
-//       if(!isNaN(treePercent) && !isNaN(medianIncome)){
-//         if(medianIncome <= 42000) histogramData[0].push(treePercent); //Lower income
-//         else if(medianIncome <= 125000) histogramData[1].push(treePercent); //Middle income
-//         else histogramData[2].push(treePercent); //Upper income
-//       }
-//     });
-//
-//     return {
-//       "geojson": data,
-//       "histogramData": histogramData
-//     };
-//   })
-//   .then(function(data) {
-    var plot = scrollVis();
-    let data = [];
+// Load all files, then display
+Promise.all([
+  d3.json("data/public/kansas-city-bgs-race-rent-crime.geojson"),
+  d3.json("data/public/kansas-city-boundaries-mo.geojson"),
+  d3.json("data/public/kansas-city-evictions.geojson"),
+  d3.json("data/public/kansas-city-max-buslines.geojson"),
+  d3.json("data/public/kansas-city-shotspotter-activations-grouped.geojson"),
+  d3.json("data/public/kansas-city-shotspotter-approx-coverage-area.geojson"),
+  d3.json("data/public/kansas-city-urban-renewal-areas.geojson"),
+]).then(function(data){ // Process data
+  return {
+    "kcBGsWithData": data[0],
+    "kcBoundaries": data[1],
+    "kcEvictions": data[2],
+    "kcMaxBusLines": data[3],
+    "kcShotspotterActivations": data[4],
+    "kcShotSpotterApproxCoverageArea": data[5],
+    "kcUrbanRenewalAreas": data[6],
+  };
+})
+.then(function(data) {
+  var plot = scrollVis();
 
-    d3.select('#vis')
-      .datum(data)
-      .call(plot);
+  d3.select('#vis')
+    .datum(data)
+    .call(plot);
 
-    var scroll = scroller()
-      .container(d3.select('#scrolling-vis'));
+  var scroll = scroller()
+    .container(d3.select('#scrolling-vis'));
 
-    scroll(d3.selectAll('.step'));
+  scroll(d3.selectAll('.step'));
 
-    scroll.on('active', function (index) {
-      d3.selectAll('.step')
-        .classed("active", function (d, i) { return i === index })
-        .style('opacity', function (d, i) { return i === index ? 1 : 0.1; });
+  scroll.on('active', function (index) {
+    d3.selectAll('.step')
+      .classed("active", function (d, i) { return i === index })
+      .style('opacity', function (d, i) { return i === index ? 1 : 0.1; });
 
-      plot.activate(index);
-    });
+    plot.activate(index);
+  });
 
-    scroll.on('progress', function (index, progress) {
-      plot.update(index, progress);
-    });
+  scroll.on('progress', function (index, progress) {
+    plot.update(index, progress);
+  });
 
-    // let resizeTimer;
+  // let resizeTimer;
 
-    // Handle Resize
-    // d3.select(window)
-    //   .on('resize', function(){
-      //   clearTimeout(resizeTimer);
-      //   resizeTimer = setTimeout(function() {
-      //     width = document.getElementById("vis").offsetWidth - margin.left - margin.right - 20;
-      //
-      //     var svg = d3.select("#graph").select("svg")
-      //       .attr("width", width + margin.left + margin.right)
-      //       .attr("height", height + margin.top + margin.bottom);
-      //
-      //     var x = d3.scaleLinear()
-      //       .domain([0, 50])
-      //       .range([0, width]);
-      //
-      //     svg.select(".x.axis")
-      //       .call(d3.axisBottom(x).tickFormat((x) => x + "%").ticks(5));
-      //
-      //     svg.select(".y-axis-label")
-      //       .attr("transform",
-      //             `translate(${width / 2},${height + 40})`);
-      //
-      //     histogram = d3.histogram()
-      //       .value(function(d) { return d; })
-      //       .domain(x.domain())
-      //       .thresholds(x.ticks(25));
-      //
-      //     if(currentHistogram != -1){
-      //       var bins = histogram(histogramData[currentHistogram]),
-      //           median = d3.median(histogramData[currentHistogram]),
-      //           medianX = x(median);
-      //
-      //       var y = d3.scaleLinear()
-      //           .range([height, 0])
-      //           .domain([0, d3.max(bins, function(d) { return d.length; })]);
-      //
-      //       d3.select("svg").select(".median-text")
-      //         .attr("transform", `translate(${medianX}, ${-22})`);
-      //
-      //       d3.select("svg").select(".median-line")
-      //         .attr("x1", medianX)
-      //         .attr("x2", medianX);
-      //
-      //       d3.select("svg").select(".median-arrow")
-      //         .attr("points", `${medianX},-5 ${medianX - 10},-15 ${medianX + 10},-15`);
-      //
-      //       d3.select("svg").selectAll("rect")
-      //         .attr("x", 1)
-      //         .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
-      //         .attr("width", function(d) { return x(d.x1) - x(d.x0); });
-      //     }
-      //   }, 50);
-      // });
-  //
-  // }).catch(function(err) {
-  //     // handle error here
-  //     console.log(err);
-  // });
+  // Handle Resize
+  // d3.select(window)
+  //   .on('resize', function(){
+    //   clearTimeout(resizeTimer);
+    //   resizeTimer = setTimeout(function() {
+    //     width = document.getElementById("vis").offsetWidth - margin.left - margin.right - 20;
+    //
+    //     var svg = d3.select("#graph").select("svg")
+    //       .attr("width", width + margin.left + margin.right)
+    //       .attr("height", height + margin.top + margin.bottom);
+    //
+    //     var x = d3.scaleLinear()
+    //       .domain([0, 50])
+    //       .range([0, width]);
+    //
+    //     svg.select(".x.axis")
+    //       .call(d3.axisBottom(x).tickFormat((x) => x + "%").ticks(5));
+    //
+    //     svg.select(".y-axis-label")
+    //       .attr("transform",
+    //             `translate(${width / 2},${height + 40})`);
+    //
+    //     histogram = d3.histogram()
+    //       .value(function(d) { return d; })
+    //       .domain(x.domain())
+    //       .thresholds(x.ticks(25));
+    //
+    //     if(currentHistogram != -1){
+    //       var bins = histogram(histogramData[currentHistogram]),
+    //           median = d3.median(histogramData[currentHistogram]),
+    //           medianX = x(median);
+    //
+    //       var y = d3.scaleLinear()
+    //           .range([height, 0])
+    //           .domain([0, d3.max(bins, function(d) { return d.length; })]);
+    //
+    //       d3.select("svg").select(".median-text")
+    //         .attr("transform", `translate(${medianX}, ${-22})`);
+    //
+    //       d3.select("svg").select(".median-line")
+    //         .attr("x1", medianX)
+    //         .attr("x2", medianX);
+    //
+    //       d3.select("svg").select(".median-arrow")
+    //         .attr("points", `${medianX},-5 ${medianX - 10},-15 ${medianX + 10},-15`);
+    //
+    //       d3.select("svg").selectAll("rect")
+    //         .attr("x", 1)
+    //         .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
+    //         .attr("width", function(d) { return x(d.x1) - x(d.x0); });
+    //     }
+    //   }, 50);
+    // });
+
+}).catch(function(err) {
+  // handle error here
+  console.log(err);
+});
