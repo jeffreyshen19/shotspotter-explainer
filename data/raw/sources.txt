@@ -1,2 +1,4 @@
 - https://www.marc.org/Data-Economy/Maps-and-GIS/GIS-Data/GIS-Datasets
   - Map of cities in the Kansas City metro area, extracted Kansas City, MO from here.
+- https://www.muckrock.com/foi/kansas-city-331/shotspotter-data-kansas-city-police-department-111302/#comms
+  - Spreadsheet of all ShotSpotter activations in Kansas City from January 1, 2016 to April 20, 2021 obtained via public records request.
