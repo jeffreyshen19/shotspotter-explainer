@@ -6,6 +6,14 @@ let width = document.getElementById("vis").offsetWidth - margin.left - margin.ri
 let map, histogram, histogramData, currentHistogram = -1;
 let layers = {};
 
+function hideLayer(layer){
+    map.removeLayer(layer);
+}
+
+function showLayer(layer){
+    layer.addTo(map);
+}
+
 var scrollVis = function () {
 
   // Which visualization we currently are on
@@ -32,14 +40,12 @@ var scrollVis = function () {
   // Creates initial elements for all visualizations
   var setupVis = function (data) {
     // Add map
-    // map = L.map('map', {
-    //   zoomControl: false,
-    //   scrollWheelZoom: false,
-    //   doubleClickZoom: false,
-    //   dragging: false
-    // });
-
-    map = L.map('map').setView([39.092,-94.856], 9);
+    map = L.map('map', {
+      zoomControl: false,
+      scrollWheelZoom: false,
+      doubleClickZoom: false,
+      dragging: false
+    }).setView([39.092,-94.856], 9);
 
     // Add background tile
     L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
@@ -50,47 +56,84 @@ var scrollVis = function () {
     for(let key in data){
       let style = {};
 
-      if(key == "kcBoundaries"){
-        style = {
-          "color": "#1f3a93",
-          "weight": 2,
-          "opacity": 0.5,
-          "fillOpacity": 0.05,
-        }
+      // Styling options
+      switch(key){
+        case "kcBoundaries":
+          style = {
+            "color": "#1f3a93",
+            "weight": 2,
+            "opacity": 0.5,
+            "fillOpacity": 0.05,
+          };
+          break;
+        case "kcShotspotterActivations":
+          style = {
+            radius: 2,
+            fillColor: "#ff7800",
+            color: "#000",
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.8
+          }
       }
-      layers[key] = L.geoJSON(data[key], {
-        style: style
-      });
+
+      // Render based off point or polygon
+      switch(key){
+        case "kcBoundaries":
+        case "kcBGsWithData":
+        case "kcMaxBusLines":
+        case "kcShotSpotterApproxCoverageArea":
+          layers[key] = L.geoJSON(data[key], {
+            style: style
+          });
+          break;
+        case "kcEvictions":
+        case "kcShotspotterActivations":
+        case "kcUrbanRenewalAreas":
+          layers[key] = L.geoJSON(data[key], {
+            pointToLayer: function (feature, latlng) {
+                return L.circleMarker(latlng, style);
+            }
+          });
+          break;
+      }
     }
 
+    showLayer(layers.kcShotspotterActivations);
+    layers.kcShotspotterActivations.setStyle({"opacity": 0});
 
   };
 
   // Handles display logic for sections
   var setupSections = function () {
     activateFunctions[0] = function(){
-      map.removeLayer(layers.kcBoundaries);
+      hideLayer(layers.kcBoundaries);
+      //Todo; set frame here
     };
     updateFunctions[0] = function(){};
 
     activateFunctions[1] = function(){
-      layers.kcBoundaries.addTo(map);
+      showLayer(layers.kcBoundaries);
       map.fitBounds(layers.kcBoundaries.getBounds());
     };
     updateFunctions[1] = function(){};
 
-    activateFunctions[2] = function(){displayImage("img2")};
+    activateFunctions[2] = function(){
+      map.flyToBounds(layers.kcBoundaries.getBounds());
+      layers.kcShotspotterActivations.setStyle({"opacity": 0, "fillOpacity": 0});
+    };
     updateFunctions[2] = function(){};
-    //
-    // activateFunctions[3] = function(){displayImage("img2")};
-    // updateFunctions[3] = function(){};
-    //
-    // activateFunctions[4] = function(){
-    //   displayImage("img3");
-    //   d3.select("#graph").transition().duration(500).style("opacity", "0");
-    //   currentHistogram = -1;
-    // };
-    // updateFunctions[4] = function(){};
+
+    activateFunctions[3] = function(){
+      layers.kcShotspotterActivations.setStyle({"opacity": 1, "fillOpacity": 0.9});
+      map.flyToBounds(layers.kcShotspotterActivations.getBounds(), {padding: [50, 50]});
+    };
+    updateFunctions[3] = function(){};
+
+    activateFunctions[4] = function(){
+
+    };
+    updateFunctions[4] = function(){};
     //
     // activateFunctions[5] = function(){
     //   d3.select("#img3").transition().duration(500).style("opacity", "0");
