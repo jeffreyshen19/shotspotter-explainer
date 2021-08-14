@@ -18,12 +18,18 @@ html(lang='en')
     link(href='bower_components/bulma/css/bulma.min.css', rel='stylesheet', type='text/css')
     link(href='dist/CSS/main.css', rel='stylesheet', type='text/css')
   body 
-    #scrolling-vis.columns  
-      #vis.column 
-        #map
-      #sections.column.is-narrow
-        section.step Take Kansas City, Missouri for example. 
-        section.step These are the municipal boundaries.
+    header 
+      .text 
+        h1 Title Goes Here
+        p.is-size-4 Incididunt magna labore sint proident fugiat exercitation ad consectetur ea proident ea.
+    .container
+      #scrolling-vis.columns.is-variable.is-6
+        #vis.column 
+          #map
+        #sections.column.is-narrow
+          section.step Take Kansas City, Missouri for example. 
+          section.step These are the municipal boundaries.
+          section.step In 2012, Kansas City <a href = "https://www.shotspotter.com/news/gunfire-down-26-percent-in-kansas-city-areas-covered-by-shotspotter-following-transit-police-partner/">partnered</a> with ShotSpotter to monitor 3.55 square miles of the city—around 1% of the city's total area. This partnership <a href ="https://www.smartcitiesdive.com/news/reckoning-with-shotspotters-ambiguous-roi/595417/">costs</a> the city around $200,000 annually. 
         
     script(src="https://d3js.org/d3.v5.js")
     script(src = "/dist/JS/scroller.js")

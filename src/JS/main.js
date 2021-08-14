@@ -79,8 +79,8 @@ var scrollVis = function () {
     };
     updateFunctions[1] = function(){};
 
-    // activateFunctions[2] = function(){displayImage("img2")};
-    // updateFunctions[2] = function(){};
+    activateFunctions[2] = function(){displayImage("img2")};
+    updateFunctions[2] = function(){};
     //
     // activateFunctions[3] = function(){displayImage("img2")};
     // updateFunctions[3] = function(){};
