@@ -4,3 +4,15 @@
   width: 600px;
   height: 500px;
 }
+
+section.step {
+  margin-bottom: 200px;
+
+  &:first-of-type{
+    margin-top: 200px;
+  }
+
+  &:last-of-type{
+    margin-bottom: 100px;
+  }
+}

@@ -4,6 +4,7 @@ let width = document.getElementById("vis").offsetWidth - margin.left - margin.ri
     height = document.getElementById("vis").offsetHeight - margin.top - margin.bottom;
 
 let map, histogram, histogramData, currentHistogram = -1;
+let layers = {};
 
 var scrollVis = function () {
 
@@ -40,111 +41,44 @@ var scrollVis = function () {
 
     map = L.map('map').setView([39.092,-94.856], 9);
 
-    //
-    // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    //     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    // }).addTo(map);
-
-// L.marker([51.5, -0.09]).addTo(map)
-//     .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-//     .openPopup();
-//
-//     console.log("this was called");
-//
+    // Add background tile
     L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    L.geoJSON(data.kcBoundaries).addTo(map);
+    // Initialize geoJSON layers
+    for(let key in data){
+      let style = {};
 
-    // histogramData = data.histogramData;
-    //
-    // // Add histogram
-    // var svg = d3.select("#graph")
-    //   .style("opacity", "0")
-    //   .append("svg")
-    //     .attr("width", width + margin.left + margin.right)
-    //     .attr("height", height + margin.top + margin.bottom)
-    //   .append("g")
-    //     .attr("transform",
-    //           "translate(" + margin.left + "," + margin.top + ")");
-    //
-    // // Add X Axis
-    // var x = d3.scaleLinear()
-    //     .domain([0, 50])
-    //     .range([0, width]);
-    //
-    // svg.append("g")
-    //   .attr("class", "x axis")
-    //   .attr("transform", "translate(0," + height + ")")
-    //   .call(d3.axisBottom(x).tickFormat((x) => x + "%").ticks(5));
-    //
-    // svg.append("text")
-    //   .attr("class", "y-axis-label")
-    //   .attr("transform",
-    //         `translate(${width / 2},${height + 40})`)
-    //   .style("text-anchor", "middle")
-    //   .style("font-family", "IBMPlexSans")
-    //   .style("font-size", 16);
-    //
-    // // set the parameters for the histogram
-    // histogram = d3.histogram()
-    //   .value(function(d) { return d; })   // I need to give the vector of value
-    //   .domain(x.domain())  // then the domain of the graphic
-    //   .thresholds(x.ticks(25)); // then the numbers of bins
-    //
-    // // And apply this function to data to get the bins
-    // var bins = histogram(data.histogramData[0]);
-    //
-    // // Add median
-    // svg.append("text")
-    //   .attr("class", "median-text")
-    //   .style("text-anchor", "middle")
-    //   .style("font-family", "IBMPlexSans")
-    //   .style("font-size", 14);
-    //
-    // svg.append("polygon")
-    //   .attr("class", "median-arrow")
-    //   .style("fill", "#24252a");
-    //
-    // svg.append("line")
-    //   .attr("class", "median-line")
-    //   .attr("y1", 0)
-    //   .attr("y2", height)
-    //   .style("stroke", "#24252a")
-    //   .style("stroke-width", 1)
-    //   .style("stroke-dasharray", "4");
-    //
-    // // Add Y Axis
-    // svg.append("g")
-    //   .attr("class", "y axis");
-    //
-    // svg.append("text")
-    //   .attr("transform", "rotate(-90)")
-    //   .attr("y", 0 - margin.left)
-    //   .attr("x", 0 - (height / 2))
-    //   .attr("dy", "1em")
-    //   .style("text-anchor", "middle")
-    //   .style("font-family", "IBMPlexSans")
-    //   .style("font-size", 16)
-    //   .text("Number of Census Tracts");
-    //
-    // // Append histogram rectangles
-    // svg.selectAll("rect")
-    //   .data(bins)
-    //   .enter()
-    //   .append("rect")
-    //     .style("fill", "#4e54c8");
+      if(key == "kcBoundaries"){
+        style = {
+          "color": "#1f3a93",
+          "weight": 2,
+          "opacity": 0.5,
+          "fillOpacity": 0.05,
+        }
+      }
+      layers[key] = L.geoJSON(data[key], {
+        style: style
+      });
+    }
+
+
   };
 
   // Handles display logic for sections
   var setupSections = function () {
-    activateFunctions[0] = function(){};
+    activateFunctions[0] = function(){
+      map.removeLayer(layers.kcBoundaries);
+    };
     updateFunctions[0] = function(){};
-    //
-    // activateFunctions[1] = function(){displayImage("img1")};
-    // updateFunctions[1] = function(){};
-    //
+
+    activateFunctions[1] = function(){
+      layers.kcBoundaries.addTo(map);
+      map.fitBounds(layers.kcBoundaries.getBounds());
+    };
+    updateFunctions[1] = function(){};
+
     // activateFunctions[2] = function(){displayImage("img2")};
     // updateFunctions[2] = function(){};
     //
