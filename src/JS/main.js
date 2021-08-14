@@ -44,7 +44,7 @@ var scrollVis = function () {
       zoomControl: false,
       scrollWheelZoom: false,
       doubleClickZoom: false,
-      dragging: false
+      dragging: false,
     }).setView([39.092,-94.856], 9);
 
     // Add background tile
@@ -66,14 +66,22 @@ var scrollVis = function () {
             "fillOpacity": 0.05,
           };
           break;
+        case "kcShotSpotterApproxCoverageArea":
+          style = {
+            "color": "#cf000f",
+            "weight": 2,
+            "opacity": 0.5,
+            "fillOpacity": 0.05,
+          };
+          break;
         case "kcShotspotterActivations":
           style = {
             radius: 2,
-            fillColor: "#ff7800",
-            color: "#000",
-            weight: 1,
+            fillColor: "#cf000f",
+            color: "black",
+            weight: 0.5,
             opacity: 1,
-            fillOpacity: 0.8
+            fillOpacity: 0.5
           }
       }
 
@@ -119,34 +127,42 @@ var scrollVis = function () {
     updateFunctions[1] = function(){};
 
     activateFunctions[2] = function(){
-      map.flyToBounds(layers.kcBoundaries.getBounds());
-      layers.kcShotspotterActivations.setStyle({"opacity": 0, "fillOpacity": 0});
+      map.fitBounds(layers.kcBoundaries.getBounds());
+      layers.kcShotspotterActivations.setStyle({"fillOpacity": 0, "opacity": 0});
     };
     updateFunctions[2] = function(){};
 
     activateFunctions[3] = function(){
-      layers.kcShotspotterActivations.setStyle({"opacity": 1, "fillOpacity": 0.9});
-      map.flyToBounds(layers.kcShotspotterActivations.getBounds(), {padding: [50, 50]});
+      layers.kcShotspotterActivations.setStyle({"fillOpacity": 0.5, "opacity": 1});
+      map.fitBounds(layers.kcShotspotterActivations.getBounds(), {padding: [50, 50]});
+      layers.kcShotspotterActivations.eachLayer(function (marker) {
+        marker.setRadius(2);
+      });
     };
     updateFunctions[3] = function(){};
 
     activateFunctions[4] = function(){
-
+      layers.kcShotspotterActivations.eachLayer(function (marker) {
+        marker.setRadius(2 * Math.sqrt(marker.feature.properties.Activations));
+      });
     };
     updateFunctions[4] = function(){};
-    //
-    // activateFunctions[5] = function(){
-    //   d3.select("#img3").transition().duration(500).style("opacity", "0");
-    //   displayHistogram(0, false);
-    // };
-    // updateFunctions[5] = function(){};
-    //
-    // activateFunctions[6] = function(){displayHistogram(0)};
-    // updateFunctions[6] = function(){};
-    //
-    // activateFunctions[7] = function(){displayHistogram(1)};
-    // updateFunctions[7] = function(){};
-    //
+
+    activateFunctions[5] = function(){
+      hideLayer(layers.kcShotSpotterApproxCoverageArea);
+      layers.kcShotspotterActivations.setStyle({"fillOpacity": 0.5, "opacity": 1});
+    };
+    updateFunctions[5] = function(){};
+
+    activateFunctions[6] = function(){
+      layers.kcShotspotterActivations.setStyle({"fillOpacity": 0, "opacity": 0});
+      showLayer(layers.kcShotSpotterApproxCoverageArea);
+    };
+    updateFunctions[6] = function(){};
+
+    activateFunctions[7] = function(){};
+    updateFunctions[7] = function(){};
+
     // activateFunctions[8] = function(){displayHistogram(2)};
     // updateFunctions[8] = function(){};
   };
