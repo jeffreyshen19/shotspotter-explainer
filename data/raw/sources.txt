@@ -4,3 +4,5 @@
   - Spreadsheet of all ShotSpotter activations in Kansas City from January 1, 2016 to April 20, 2021 obtained via public records request.
 - https://ridekc.org/rider-guide/system-map
   - Kansas City bus routes
+- demographic data from 2019 ACS at block group level
+- shape files from census: https://www.census.gov/cgi-bin/geo/shapefiles/index.php?year=2019&layergroup=Block+Groups
