@@ -1,0 +1,20 @@
+{
+  "name": "shotspotter-explainer",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "Jeffrey Shen <jjshen@mit.edu>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/jeffreyshen19/shotspotter-explainer",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bulma": "^0.9.3"
+  }
+}
