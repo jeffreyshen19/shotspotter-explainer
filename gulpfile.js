@@ -39,7 +39,7 @@ gulp.task('webserver', function() {
 gulp.task('watch', function() {
   gulp.watch('./src/SCSS/*.scss', gulp.series('sass'));
   gulp.watch('./src/views/*.pug', gulp.series('views'));
-  gulp.watch('./src/JS/*.js', gulp.series('babel'));
+  gulp.watch('./src/JS/*.js', {ignoreInitial: false}, gulp.series('babel'));
 });
 
-gulp.task('default', gulp.series('babel', 'views', 'sass', gulp.parallel('watch', 'webserver')));
+gulp.task('default', gulp.series('babel', 'views', 'sass', gulp.parallel('webserver', 'watch')));
