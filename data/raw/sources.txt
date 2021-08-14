@@ -9,3 +9,5 @@
 - evictionlab.org: eviction data for Kansas City (there are problems w/ this data, but its the only dataset which exists)
 - https://data.kcmo.org/Land-Use/Urban-Renewal/k25n-6b98
   - "urban renewal" areas
+- https://data.kcmo.org/Crime/Violent-Crimes/2n9v-6cp5
+  - 2017 Kansas City violent crime data
