@@ -304,6 +304,36 @@ var scrollVis = function () {
       layers.kcccFocus.addTo(map);
     };
     updateFunctions[18] = function(){};
+
+    activateFunctions[19] = function(){
+      layers.kcBGsWithData.setStyle({"fillOpacity": 0, "opacity": 0});
+      layers.kccc39.addTo(map);
+      layers.kcccFocus.addTo(map);
+      layers.troostAve.addTo(map);
+      layers.kcUrbanRenewalAreas.addTo(map);
+    };
+    updateFunctions[19] = function(){};
+
+    activateFunctions[20] = function(){
+      map.removeLayer(layers.kccc39);
+      map.removeLayer(layers.kcccFocus);
+      map.removeLayer(layers.troostAve);
+      map.removeLayer(layers.kcUrbanRenewalAreas);
+      layers.kcBGsWithData.setStyle({"fillOpacity": 1, "opacity": 1});
+      let colorScale = d3.scaleLinear()
+        .domain([-1.5, 0, 1.5])
+        .range(["#1f3a93", "white", "#cf000f"]);
+
+      layers.kcBGsWithData.setStyle({"fillOpacity": 1, "opacity": 1});
+      layers.kcBGsWithData.setStyle(function(feature) {
+        return {
+          color: feature.properties["PCT_CHANGE_RENT"] ? colorScale(feature.properties["PCT_CHANGE_RENT"]) : "rgba(0, 0, 0, 0)"
+        }
+      });
+      // PCT_CHANGE_RENT
+      // TODO: deal w/ null
+    };
+    updateFunctions[20] = function(){};
     //
     // activateFunctions[7] = function(){};
     // updateFunctions[7] = function(){};
