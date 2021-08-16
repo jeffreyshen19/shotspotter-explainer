@@ -83,6 +83,7 @@ var scrollVis = function () {
         case "kcBoundaries":
         case "kcBGsWithData":
         case "kcMaxBusLines":
+        case "troostAve":
         case "kcShotSpotterApproxCoverageArea":
           layers[key] = L.geoJSON(data[key], {
             style: style
@@ -194,6 +195,7 @@ var scrollVis = function () {
     updateFunctions[9] = function(){};
 
     activateFunctions[10] = function(){
+      layers.kcBGsWithData.setStyle({"fillOpacity": 1, "opacity": 1});
       layers.kcBGsWithData.eachLayer(function (layer) {
         if(layer.feature.properties.GEOID == '290950034002') {
           layer.setStyle({color: '#eeee00'});
@@ -203,14 +205,7 @@ var scrollVis = function () {
     updateFunctions[10] = function(){};
 
     activateFunctions[11] = function(){
-      let colorScale = d3.scaleLinear().domain([0, data.maxViolentCrimeRate])
-        .range(["white", "#2e3131"]);
-
-      layers.kcBGsWithData.setStyle(function(feature) {
-        return {
-          color: colorScale(feature.properties["VIOLENT CRIME RATE"])
-        }
-      });
+      layers.kcBGsWithData.setStyle({"fillOpacity": 0, "opacity": 0});
       map.removeLayer(layers.kcMaxBusLines);
     };
     updateFunctions[11] = function(){};
@@ -218,8 +213,19 @@ var scrollVis = function () {
     activateFunctions[12] = function(){
       layers.kcMaxBusLines.addTo(map);
       layers.kcShotSpotterApproxCoverageArea.bringToFront();
+      map.removeLayer(layers.troostAve);
     };
     updateFunctions[12] = function(){};
+
+    activateFunctions[13] = function(){
+      map.removeLayer(layers.kcMaxBusLines);
+      layers.troostAve.addTo(map);
+    };
+    updateFunctions[13] = function(){};
+
+    activateFunctions[14] = function(){
+    };
+    updateFunctions[14] = function(){};
     //
     // activateFunctions[7] = function(){};
     // updateFunctions[7] = function(){};
@@ -349,6 +355,7 @@ Promise.all([
   d3.json("data/public/kansas-city-shotspotter-activations-grouped.geojson"),
   d3.json("data/public/kansas-city-shotspotter-approx-coverage-area.geojson"),
   d3.json("data/public/kansas-city-urban-renewal-areas.geojson"),
+  d3.json("data/public/troost-ave.geojson"),
 ]).then(function(data){ // Process data
   data = {
     "kcBGsWithData": data[0],
@@ -358,6 +365,7 @@ Promise.all([
     "kcShotspotterActivations": data[4],
     "kcShotSpotterApproxCoverageArea": data[5],
     "kcUrbanRenewalAreas": data[6],
+    "troostAve": data[7],
   };
 
   // Cast to real
