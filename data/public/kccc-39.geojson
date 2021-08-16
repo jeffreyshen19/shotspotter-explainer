@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "kccc-39",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::4269" } },
+"features": [
+{ "type": "Feature", "properties": { "id": null }, "geometry": { "type": "MultiLineString", "coordinates": [ [ [ -94.57800436207053, 39.056288873247304 ], [ -94.545698568191852, 39.055175188455401 ] ] ] } }
+]
+}

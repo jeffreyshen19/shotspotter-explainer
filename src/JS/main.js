@@ -59,6 +59,12 @@ var scrollVis = function () {
             "weight": 3
           };
           break;
+        case "kccc39":
+          style = {
+            "color": "#1e824c",
+            "weight": 3
+          };
+          break;
         case "kcShotSpotterApproxCoverageArea":
           style = {
             "color": "#cf000f",
@@ -93,6 +99,7 @@ var scrollVis = function () {
         case "kcBGsWithData":
         case "kcMaxBusLines":
         case "troostAve":
+        case "kccc39":
         case "kcShotSpotterApproxCoverageArea":
           layers[key] = L.geoJSON(data[key], {
             style: style
@@ -118,6 +125,33 @@ var scrollVis = function () {
 
     layers.kcShotspotterActivations.setStyle({"fillOpacity": 0, "opacity": 0});
     layers.kcBGsWithData.setStyle({"fillOpacity": 0, "opacity": 0});
+
+    layers.kcccFocus = L.layerGroup([
+      [39.069872, -94.552827, "31st & Prospect"],
+      [39.070495, -94.571334, "31st & Troost"]
+    ].map(function(coords, i){
+      return L.circleMarker([coords[0], coords[1]], {
+        radius: 4,
+        fillColor: "#1e824c",
+        weight: 0,
+        opacity: 1,
+        fillOpacity: 1
+      }).bindTooltip(coords[2], {
+        permanent: true,
+        direction: i == 0 ? "right" : "left",
+      });
+    }));
+
+    layers.kccc39.bindTooltip("39th Street Corridor", {
+      permanent: true,
+      direction: "left",
+      offset: L.point([-50, 0])
+    });
+
+    layers.troostAve.bindTooltip("Troost Ave", {
+      permanent: true,
+      direction: "left",
+    })
 
     // Add background tile
     L.tileLayer('https://api.maptiler.com/maps/positron/{z}/{x}/{y}.png?key=lTdR1t9ghN06990FNZFA', {
@@ -260,8 +294,16 @@ var scrollVis = function () {
     activateFunctions[17] = function(){
       layers.kcBGsWithData.setStyle({"fillOpacity": 0, "opacity": 0});
       layers.kcUrbanRenewalAreas.addTo(map);
+      map.removeLayer(layers.kccc39);
+      map.removeLayer(layers.kcccFocus);
     };
     updateFunctions[17] = function(){};
+
+    activateFunctions[18] = function(){
+      layers.kccc39.addTo(map);
+      layers.kcccFocus.addTo(map);
+    };
+    updateFunctions[18] = function(){};
     //
     // activateFunctions[7] = function(){};
     // updateFunctions[7] = function(){};
@@ -392,6 +434,7 @@ Promise.all([
   d3.json("data/public/kansas-city-shotspotter-approx-coverage-area.geojson"),
   d3.json("data/public/kansas-city-urban-renewal-areas.geojson"),
   d3.json("data/public/troost-ave.geojson"),
+  d3.json("data/public/kccc-39.geojson"),
 ]).then(function(data){ // Process data
   data = {
     "kcBGsWithData": data[0],
@@ -402,6 +445,7 @@ Promise.all([
     "kcShotSpotterApproxCoverageArea": data[5],
     "kcUrbanRenewalAreas": data[6],
     "troostAve": data[7],
+    "kccc39": data[8],
   };
 
   // Cast to real
