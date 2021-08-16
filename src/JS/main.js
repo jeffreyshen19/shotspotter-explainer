@@ -288,6 +288,15 @@ var scrollVis = function () {
     activateFunctions[16] = function(){
       layers.kcBGsWithData.setStyle({"fillOpacity": 1, "opacity": 1});
       map.removeLayer(layers.kcUrbanRenewalAreas);
+      let colorScale = d3.scaleLinear().domain([0, 1])
+        .range(["white", "#1f3a93"]);
+
+      layers.kcBGsWithData.setStyle({"fillOpacity": 1, "opacity": 1});
+      layers.kcBGsWithData.setStyle(function(feature) {
+        return {
+          color: colorScale(feature.properties["PCT_BLACK"])
+        }
+      });
     };
     updateFunctions[16] = function(){};
 
@@ -319,7 +328,6 @@ var scrollVis = function () {
       map.removeLayer(layers.kcccFocus);
       map.removeLayer(layers.troostAve);
       map.removeLayer(layers.kcUrbanRenewalAreas);
-      layers.kcBGsWithData.setStyle({"fillOpacity": 1, "opacity": 1});
       let colorScale = d3.scaleLinear()
         .domain([-1.5, 0, 1.5])
         .range(["#1f3a93", "white", "#cf000f"]);
@@ -330,10 +338,22 @@ var scrollVis = function () {
           color: feature.properties["PCT_CHANGE_RENT"] ? colorScale(feature.properties["PCT_CHANGE_RENT"]) : "rgba(0, 0, 0, 0)"
         }
       });
-      // PCT_CHANGE_RENT
-      // TODO: deal w/ null
     };
     updateFunctions[20] = function(){};
+
+    activateFunctions[21] = function(){
+      let colorScale = d3.scaleLinear()
+        .domain([0, 25])
+        .range(["white", "#cf000f"]);
+
+      layers.kcBGsWithData.setStyle({"fillOpacity": 1, "opacity": 1});
+      layers.kcBGsWithData.setStyle(function(feature) {
+        return {
+          color: colorScale(feature.properties["eviction.rate"])
+        }
+      });
+    };
+    updateFunctions[21] = function(){};
     //
     // activateFunctions[7] = function(){};
     // updateFunctions[7] = function(){};
@@ -458,7 +478,6 @@ var scrollVis = function () {
 Promise.all([
   d3.json("data/public/kansas-city-bgs.geojson"),
   d3.json("data/public/kansas-city-boundaries-mo.geojson"),
-  d3.json("data/public/kansas-city-evictions-bgs-2015.geojson"),
   d3.json("data/public/kansas-city-max-buslines.geojson"),
   d3.json("data/public/kansas-city-shotspotter-activations-grouped.geojson"),
   d3.json("data/public/kansas-city-shotspotter-approx-coverage-area.geojson"),
@@ -469,13 +488,12 @@ Promise.all([
   data = {
     "kcBGsWithData": data[0],
     "kcBoundaries": data[1],
-    "kcEvictions": data[2],
-    "kcMaxBusLines": data[3],
-    "kcShotspotterActivations": data[4],
-    "kcShotSpotterApproxCoverageArea": data[5],
-    "kcUrbanRenewalAreas": data[6],
-    "troostAve": data[7],
-    "kccc39": data[8],
+    "kcMaxBusLines": data[2],
+    "kcShotspotterActivations": data[3],
+    "kcShotSpotterApproxCoverageArea": data[4],
+    "kcUrbanRenewalAreas": data[5],
+    "troostAve": data[6],
+    "kccc39": data[7],
   };
 
   // Cast to real
