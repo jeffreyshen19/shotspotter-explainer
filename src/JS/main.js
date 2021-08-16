@@ -6,14 +6,6 @@ let width = document.getElementById("vis").offsetWidth - margin.left - margin.ri
 let map, histogram, histogramData, currentHistogram = -1;
 let layers = {};
 
-function hideLayer(layer){
-    map.removeLayer(layer);
-}
-
-function showLayer(layer){
-    layer.addTo(map);
-}
-
 var scrollVis = function () {
 
   // Which visualization we currently are on
@@ -105,63 +97,63 @@ var scrollVis = function () {
           });
           break;
       }
+
     }
 
-    showLayer(layers.kcShotspotterActivations);
-    layers.kcShotspotterActivations.setStyle({"opacity": 0});
+    // Fit
+    map.fitBounds(layers.kcBoundaries.getBounds());
 
   };
 
   // Handles display logic for sections
   var setupSections = function () {
     activateFunctions[0] = function(){
-      hideLayer(layers.kcBoundaries);
-      //Todo; set frame here
+      layers.kcShotSpotterApproxCoverageArea.addTo(map);
     };
     updateFunctions[0] = function(){};
 
     activateFunctions[1] = function(){
-      showLayer(layers.kcBoundaries);
-      map.fitBounds(layers.kcBoundaries.getBounds());
+      // showLayer(layers.kcBoundaries);
+      // map.fitBounds(layers.kcBoundaries.getBounds());
     };
     updateFunctions[1] = function(){};
 
     activateFunctions[2] = function(){
-      map.fitBounds(layers.kcBoundaries.getBounds());
-      layers.kcShotspotterActivations.setStyle({"fillOpacity": 0, "opacity": 0});
+      // map.fitBounds(layers.kcBoundaries.getBounds());
+      // layers.kcShotspotterActivations.setStyle({"fillOpacity": 0, "opacity": 0});
     };
     updateFunctions[2] = function(){};
 
-    activateFunctions[3] = function(){
-      layers.kcShotspotterActivations.setStyle({"fillOpacity": 0.5, "opacity": 1});
-      map.fitBounds(layers.kcShotspotterActivations.getBounds(), {padding: [50, 50]});
-      layers.kcShotspotterActivations.eachLayer(function (marker) {
-        marker.setRadius(2);
-      });
-    };
-    updateFunctions[3] = function(){};
-
-    activateFunctions[4] = function(){
-      layers.kcShotspotterActivations.eachLayer(function (marker) {
-        marker.setRadius(2 * Math.sqrt(marker.feature.properties.Activations));
-      });
-    };
-    updateFunctions[4] = function(){};
-
-    activateFunctions[5] = function(){
-      hideLayer(layers.kcShotSpotterApproxCoverageArea);
-      layers.kcShotspotterActivations.setStyle({"fillOpacity": 0.5, "opacity": 1});
-    };
-    updateFunctions[5] = function(){};
-
-    activateFunctions[6] = function(){
-      layers.kcShotspotterActivations.setStyle({"fillOpacity": 0, "opacity": 0});
-      showLayer(layers.kcShotSpotterApproxCoverageArea);
-    };
-    updateFunctions[6] = function(){};
-
-    activateFunctions[7] = function(){};
-    updateFunctions[7] = function(){};
+    // activateFunctions[3] = function(){
+    //   // layers.kcShotspotterActivations.setStyle({"fillOpacity": 0.5, "opacity": 1});
+    //   // map.fitBounds(layers.kcShotspotterActivations.getBounds(), {padding: [50, 50]});
+    //   // layers.kcShotspotterActivations.eachLayer(function (marker) {
+    //   //   marker.setRadius(2);
+    //   // });
+    // };
+    // updateFunctions[3] = function(){};
+    //
+    // activateFunctions[4] = function(){
+    //   layers.kcShotspotterActivations.eachLayer(function (marker) {
+    //     marker.setRadius(2 * Math.sqrt(marker.feature.properties.Activations));
+    //   });
+    // };
+    // updateFunctions[4] = function(){};
+    //
+    // activateFunctions[5] = function(){
+    //   hideLayer(layers.kcShotSpotterApproxCoverageArea);
+    //   layers.kcShotspotterActivations.setStyle({"fillOpacity": 0.5, "opacity": 1});
+    // };
+    // updateFunctions[5] = function(){};
+    //
+    // activateFunctions[6] = function(){
+    //   layers.kcShotspotterActivations.setStyle({"fillOpacity": 0, "opacity": 0});
+    //   showLayer(layers.kcShotSpotterApproxCoverageArea);
+    // };
+    // updateFunctions[6] = function(){};
+    //
+    // activateFunctions[7] = function(){};
+    // updateFunctions[7] = function(){};
 
     // activateFunctions[8] = function(){displayHistogram(2)};
     // updateFunctions[8] = function(){};
@@ -281,9 +273,9 @@ var scrollVis = function () {
 
 // Load all files, then display
 Promise.all([
-  d3.json("data/public/kansas-city-bgs-race-rent-crime.geojson"),
+  d3.json("data/public/kansas-city-bgs.geojson"),
   d3.json("data/public/kansas-city-boundaries-mo.geojson"),
-  d3.json("data/public/kansas-city-evictions.geojson"),
+  d3.json("data/public/kansas-city-evictions-bgs-2015.geojson"),
   d3.json("data/public/kansas-city-max-buslines.geojson"),
   d3.json("data/public/kansas-city-shotspotter-activations-grouped.geojson"),
   d3.json("data/public/kansas-city-shotspotter-approx-coverage-area.geojson"),
