@@ -76,6 +76,15 @@ var scrollVis = function () {
             opacity: 0.5,
             fillOpacity: 1,
           }
+          break;
+        case "kcUrbanRenewalAreas":
+          style = {
+            radius: 4,
+            fillColor: "#2e3131",
+            weight: 0,
+            opacity: 1,
+            fillOpacity: 1,
+          }
       }
 
       // Render based off point or polygon
@@ -241,6 +250,18 @@ var scrollVis = function () {
       });
     };
     updateFunctions[15] = function(){};
+
+    activateFunctions[16] = function(){
+      layers.kcBGsWithData.setStyle({"fillOpacity": 1, "opacity": 1});
+      map.removeLayer(layers.kcUrbanRenewalAreas);
+    };
+    updateFunctions[16] = function(){};
+
+    activateFunctions[17] = function(){
+      layers.kcBGsWithData.setStyle({"fillOpacity": 0, "opacity": 0});
+      layers.kcUrbanRenewalAreas.addTo(map);
+    };
+    updateFunctions[17] = function(){};
     //
     // activateFunctions[7] = function(){};
     // updateFunctions[7] = function(){};
