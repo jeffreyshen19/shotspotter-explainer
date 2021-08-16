@@ -15,7 +15,6 @@ html(lang='en')
     script(src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
     integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
     crossorigin="")
-    script(src="https://cdn.jsdelivr.net/npm/leaflet-transitionedicon@0.2.1/index.min.js")
     link(href='bower_components/bulma/css/bulma.min.css', rel='stylesheet', type='text/css')
     link(href='dist/CSS/main.css', rel='stylesheet', type='text/css')
   body 
@@ -46,15 +45,11 @@ html(lang='en')
           section.step Though not all activations result in police deployments, this data suggests that ShotSpotter results in multiple deployments of armed police every day to a small area of around 16,000 people, of whom over 75% are Black.
           section.step Therefore, ShotSpotter increases the potential for deadly police violence between armed cops who believe (often falsely) that a shooter is in the area and a majority Black population. 
           section.step As the abolitionist Jackie Wang <a href = "https://mitpress.mit.edu/books/carceral-capitalism">wrote</a> about PredPol, another algorithmic technology which directs police to supposed crimes: “When the Cleveland police officer Timothy Loehmann arrived on the scene on November 22, 2014, it took him less than two seconds to fatally shoot Tamir Rice, a twelve-year-old black boy who was playing with a toy gun. This raises the question—if law enforcement officers are already too trigger-happy, will the little red boxes that mark temporary crime zones reduce the reaction time of officers while they’re in the designated boxes?”
-          section.step Tragically, ShotSpotter has already resulted in the <a href = "https://thehill.com/homenews/state-watch/549612-police-technology-under-scrutiny-following-chicago-shooting">police killing</a> of Adam Toledo, a 13-year-old Hispanic cboy who was shot—with his hands in the air—five minutes after police were notified by ShotSpotter of potential gunshots in the Little Village neighborhood of Chicago.  
-          //- section.step Activations are anonymized to the nearest intersection, so some intersections have multiple activations. Let's scale each intersection by the number of activations at that location. 
-          //- section.step TODO: add another slide here which highlights the scale and add some analysis.
-          //- section.step Based off these activations, we can approximate that ShotSpotter is deployed in this red swath. 
-          //- section.step TODO
-          
-          
-          // 9649/1936 per day on average
-          // 48 highest
+          section.step Tragically, ShotSpotter has already resulted in the <a href = "https://thehill.com/homenews/state-watch/549612-police-technology-under-scrutiny-following-chicago-shooting">police killing</a> of Adam Toledo, a 13-year-old Hispanic boy who was shot—with his hands in the air—five minutes after police were notified by ShotSpotter of potential gunshots in the Little Village neighborhood of Chicago.
+          section.step While ShotSpotter is usually placed in so-called “high risk” areas, the placement of gunshot detectors in Kansas City doesn’t correspond to the area with the most violent crime. Here's a map of the violent crime rate in 2017 by census block group.
+          section.step ShotSpotter's coverage area has violent crime rates higher than the city average, but with the exception of one block group, rates are below 145 violent crime incidents per 1,000 people. 
+          section.step On the other hand, some areas to the Northeast of the ShotSpotter coverage area have higher violent crime rates. For instance, the highlighted block group has a rate of 274 violent crime incidents per 1,000 people. 
+          section.step Pariatur adipisicing sunt qui sit velit ea est aliqua aliqua pariatur nulla sunt voluptate nisi dolor dolore dolore. Est nisi consequat labore tempor sunt velit officia fugiat incididunt ipsum reprehenderit. Pariatur ad deserunt aute veniam amet culpa nisi sit est id pariatur ad sit laboris in exercitation labore. Adipisicing aute quis velit laborum id reprehenderit quis consectetur voluptate in excepteur veniam tempor ea proident Lorem. Enim occaecat magna irure sint sunt duis esse quis. Id incididunt dolor eiusmod reprehenderit eu culpa esse.
         
     script(src="https://d3js.org/d3.v5.js")
     script(src = "/dist/JS/scroller.js")

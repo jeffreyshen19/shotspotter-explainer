@@ -25,7 +25,7 @@ var scrollVis = function () {
   var chart = function (selection) {
     selection.each(function (data) {
       setupVis(data);
-      setupSections();
+      setupSections(data);
     });
   };
 
@@ -58,7 +58,7 @@ var scrollVis = function () {
             "color": "#cf000f",
             "weight": 2,
             "opacity": 0.7,
-            "fillOpacity": 0.05,
+            "fillOpacity": 0,
           };
           break;
         case "kcShotspotterActivations":
@@ -98,6 +98,10 @@ var scrollVis = function () {
     // Fit
     map.fitBounds(layers.kcBoundaries.getBounds());
     layers.kcShotspotterActivations.addTo(map);
+    layers.kcBGsWithData.addTo(map);
+
+    layers.kcShotspotterActivations.setStyle({"fillOpacity": 0, "opacity": 0});
+    layers.kcBGsWithData.setStyle({"fillOpacity": 0, "opacity": 0});
 
     // Add background tile
     L.tileLayer('https://api.maptiler.com/maps/positron/{z}/{x}/{y}.png?key=lTdR1t9ghN06990FNZFA', {
@@ -106,7 +110,7 @@ var scrollVis = function () {
   };
 
   // Handles display logic for sections
-  var setupSections = function () {
+  var setupSections = function (data) {
     activateFunctions[0] = function(){
       layers.kcShotSpotterApproxCoverageArea.addTo(map);
       layers.kcBoundaries.addTo(map);
@@ -143,14 +147,54 @@ var scrollVis = function () {
     updateFunctions[5] = function(){};
     activateFunctions[6] = function(){};
     updateFunctions[6] = function(){};
-    activateFunctions[7] = function(){};
+
+    activateFunctions[7] = function(){
+      layers.kcBGsWithData.setStyle({"fillOpacity": 0, "opacity": 0});
+      map.flyToBounds(layers.kcShotSpotterApproxCoverageArea.getBounds(), {padding: [5, 5]});
+      layers.kcShotspotterActivations.setStyle({"fillOpacity": 0.5, "opacity": 1});
+    };
     updateFunctions[7] = function(){};
-    //
-    // activateFunctions[5] = function(){
-    //   hideLayer(layers.kcShotSpotterApproxCoverageArea);
-    //   layers.kcShotspotterActivations.setStyle({"fillOpacity": 0.5, "opacity": 1});
-    // };
-    // updateFunctions[5] = function(){};
+
+    activateFunctions[8] = function(){
+      map.flyToBounds(layers.kcBoundaries.getBounds());
+      layers.kcShotspotterActivations.setStyle({"fillOpacity": 0, "opacity": 0});
+      layers.kcBGsWithData.setStyle({"fillOpacity": 1, "opacity": 1});
+
+      let colorScale = d3.scaleLinear().domain([0, data.maxViolentCrimeRate])
+        .range(["white", "#2e3131"]);
+
+      layers.kcBGsWithData.setStyle(function(feature) {
+        return {
+          color: colorScale(feature.properties["VIOLENT CRIME RATE"])
+        }
+      })
+    };
+    updateFunctions[8] = function(){};
+
+    activateFunctions[9] = function(){
+      map.flyToBounds([
+        [39.152465, -94.609998],
+        [39.018955, -94.509757]
+      ]);
+      let colorScale = d3.scaleLinear().domain([0, data.maxViolentCrimeRate])
+        .range(["white", "#2e3131"]);
+
+      layers.kcBGsWithData.setStyle(function(feature) {
+        return {
+          color: colorScale(feature.properties["VIOLENT CRIME RATE"])
+        }
+      })
+    };
+    updateFunctions[9] = function(){};
+
+    activateFunctions[10] = function(){
+      layers.kcBGsWithData.eachLayer(function (layer) {
+        if(layer.feature.properties.GEOID == '290950034002') {
+          layer.setStyle({color: '#eeee00'});
+        }
+      });
+    };
+    updateFunctions[10] = function(){};
     //
     // activateFunctions[6] = function(){
       // layers.kcShotspotterActivations.setStyle({"fillOpacity": 0, "opacity": 0});
@@ -287,7 +331,7 @@ Promise.all([
   d3.json("data/public/kansas-city-shotspotter-approx-coverage-area.geojson"),
   d3.json("data/public/kansas-city-urban-renewal-areas.geojson"),
 ]).then(function(data){ // Process data
-  return {
+  data = {
     "kcBGsWithData": data[0],
     "kcBoundaries": data[1],
     "kcEvictions": data[2],
@@ -296,6 +340,20 @@ Promise.all([
     "kcShotSpotterApproxCoverageArea": data[5],
     "kcUrbanRenewalAreas": data[6],
   };
+
+  // Cast to real
+  let maxViolentCrimeRate = 0;
+  data.kcBGsWithData.features = data.kcBGsWithData.features.map(function(feature){
+    ["2013 MEDIAN GROSS RENT", "2013 PCT BLACK", "2013 PCT HISPANIC", "2013 PCT WHITE", "2019 MEDIAN GROSS RENT", "PCT_BLACK", "PCT_HISPANIC", "PCT_WHITE", "TOTAL"].forEach(function(key){
+      feature.properties[key] = parseFloat(feature.properties[key]);
+      maxViolentCrimeRate = Math.max(maxViolentCrimeRate, feature.properties["VIOLENT CRIME RATE"])
+    });
+    return feature;
+  });
+
+  data.maxViolentCrimeRate = maxViolentCrimeRate;
+
+  return data;
 })
 .then(function(data) {
   var plot = scrollVis();
