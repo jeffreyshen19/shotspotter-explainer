@@ -53,6 +53,12 @@ var scrollVis = function () {
             "fillOpacity": 0,
           };
           break;
+        case "kcMaxBusLines":
+          style = {
+            "color": "#1f3a93",
+            "weight": 3
+          };
+          break;
         case "kcShotSpotterApproxCoverageArea":
           style = {
             "color": "#cf000f",
@@ -195,12 +201,25 @@ var scrollVis = function () {
       });
     };
     updateFunctions[10] = function(){};
+
+    activateFunctions[11] = function(){
+      let colorScale = d3.scaleLinear().domain([0, data.maxViolentCrimeRate])
+        .range(["white", "#2e3131"]);
+
+      layers.kcBGsWithData.setStyle(function(feature) {
+        return {
+          color: colorScale(feature.properties["VIOLENT CRIME RATE"])
+        }
+      });
+      map.removeLayer(layers.kcMaxBusLines);
+    };
+    updateFunctions[11] = function(){};
     //
-    // activateFunctions[6] = function(){
-      // layers.kcShotspotterActivations.setStyle({"fillOpacity": 0, "opacity": 0});
-    //   showLayer(layers.kcShotSpotterApproxCoverageArea);
-    // };
-    // updateFunctions[6] = function(){};
+    activateFunctions[12] = function(){
+      layers.kcMaxBusLines.addTo(map);
+      layers.kcShotSpotterApproxCoverageArea.bringToFront();
+    };
+    updateFunctions[12] = function(){};
     //
     // activateFunctions[7] = function(){};
     // updateFunctions[7] = function(){};
