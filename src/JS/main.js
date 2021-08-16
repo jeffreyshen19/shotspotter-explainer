@@ -190,7 +190,7 @@ var scrollVis = function () {
         return {
           color: colorScale(feature.properties["VIOLENT CRIME RATE"])
         }
-      })
+      });
     };
     updateFunctions[9] = function(){};
 
@@ -220,12 +220,27 @@ var scrollVis = function () {
     activateFunctions[13] = function(){
       map.removeLayer(layers.kcMaxBusLines);
       layers.troostAve.addTo(map);
+      layers.kcShotSpotterApproxCoverageArea.bringToFront();
     };
     updateFunctions[13] = function(){};
 
     activateFunctions[14] = function(){
+      layers.kcBGsWithData.setStyle({"fillOpacity": 0, "opacity": 0});
     };
     updateFunctions[14] = function(){};
+
+    activateFunctions[15] = function(){
+      let colorScale = d3.scaleLinear().domain([0, 1])
+        .range(["white", "#1f3a93"]);
+
+      layers.kcBGsWithData.setStyle({"fillOpacity": 1, "opacity": 1});
+      layers.kcBGsWithData.setStyle(function(feature) {
+        return {
+          color: colorScale(feature.properties["PCT_BLACK"])
+        }
+      });
+    };
+    updateFunctions[15] = function(){};
     //
     // activateFunctions[7] = function(){};
     // updateFunctions[7] = function(){};
