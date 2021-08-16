@@ -37,12 +37,7 @@ var scrollVis = function () {
       scrollWheelZoom: false,
       doubleClickZoom: false,
       dragging: false,
-    }).setView([39.092,-94.856], 9);
-
-    // Add background tile
-    L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
-    }).addTo(map);
+    });
 
     // Initialize geoJSON layers
     for(let key in data){
@@ -52,17 +47,17 @@ var scrollVis = function () {
       switch(key){
         case "kcBoundaries":
           style = {
-            "color": "#1f3a93",
+            "color": "#2e3131",
             "weight": 2,
-            "opacity": 0.5,
-            "fillOpacity": 0.05,
+            "opacity": 0.7,
+            "fillOpacity": 0,
           };
           break;
         case "kcShotSpotterApproxCoverageArea":
           style = {
             "color": "#cf000f",
             "weight": 2,
-            "opacity": 0.5,
+            "opacity": 0.7,
             "fillOpacity": 0.05,
           };
           break;
@@ -103,12 +98,17 @@ var scrollVis = function () {
     // Fit
     map.fitBounds(layers.kcBoundaries.getBounds());
 
+    // Add background tile
+    L.tileLayer('https://api.maptiler.com/maps/positron/{z}/{x}/{y}.png?key=lTdR1t9ghN06990FNZFA', {
+      attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
+    }).addTo(map);
   };
 
   // Handles display logic for sections
   var setupSections = function () {
     activateFunctions[0] = function(){
       layers.kcShotSpotterApproxCoverageArea.addTo(map);
+      layers.kcBoundaries.addTo(map);
     };
     updateFunctions[0] = function(){};
 
