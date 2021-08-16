@@ -130,15 +130,14 @@ var scrollVis = function () {
     };
     updateFunctions[2] = function(){};
 
-    // activateFunctions[3] = function(){
-    //
-    // };
-    // updateFunctions[3] = function(){};
+    activateFunctions[3] = function(){
+      layers.kcShotspotterActivations.eachLayer(function (marker) {
+        marker.setRadius(2 * Math.sqrt(marker.feature.properties.Activations));
+      });
+    };
+    updateFunctions[3] = function(){};
     //
     // activateFunctions[4] = function(){
-    //   layers.kcShotspotterActivations.eachLayer(function (marker) {
-    //     marker.setRadius(2 * Math.sqrt(marker.feature.properties.Activations));
-    //   });
     // };
     // updateFunctions[4] = function(){};
     //
