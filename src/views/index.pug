@@ -15,6 +15,7 @@ html(lang='en')
     script(src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
     integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
     crossorigin="")
+    script(src="https://cdn.jsdelivr.net/npm/leaflet-transitionedicon@0.2.1/index.min.js")
     link(href='bower_components/bulma/css/bulma.min.css', rel='stylesheet', type='text/css')
     link(href='dist/CSS/main.css', rel='stylesheet', type='text/css')
   body 
@@ -27,14 +28,20 @@ html(lang='en')
         #vis.column 
           #map
           #legend
-            .legend-item(style = "border: 2px solid rgba(46, 48, 48, 0.7); ") 
-            span Kansas City, MO boundaries
-            .legend-item(style = "border: 2px solid rgba(207, 0, 15, 0.7); background-color: rgba(207, 0, 15, 0.05)") 
-            span ShotSpotter coverage area (approximation)
+            div
+              .legend-item(style = "border: 2px solid rgba(46, 48, 48, 0.7); ") 
+              span Kansas City, MO boundaries
+            div
+              .legend-item(style = "border: 2px solid rgba(207, 0, 15, 0.7); background-color: rgba(207, 0, 15, 0.05)") 
+              span ShotSpotter coverage area (approx.)
+            div(style = "display: none;")#legend-3
+              .legend-item(style = "border-radius: 100%; border: 1px solid rgba(46, 48, 48, 0.5); background-color: rgba(207, 0, 15)") 
+              span ShotSpotter activation
         #sections.column.is-narrow
           section.step In 2012, the Kansas City Area Transportation Authority, in partnership with police, <a href = "https://www.shotspotter.com/news/gunfire-down-26-percent-in-kansas-city-areas-covered-by-shotspotter-following-transit-police-partner/">installed</a> ShotSpotter in a 3.55 square mile section of the city (shown in red)—around 1% of the city's total area. Though the installation was initially funded by a federal grant, maintaining the ShotSpotter system now <a href ="https://www.smartcitiesdive.com/news/reckoning-with-shotspotters-ambiguous-roi/595417/">costs</a> the city around $200,000 annually. 
             p.has-text-grey.mt-2.is-size-7 ShotSpotter coverage area has been approximated based off ShotSpotter activation data as the official coverage area is not public.
-          section.step Fugiat nostrud proident deserunt adipisicing reprehenderit aliqua ea cillum. Adipisicing officia nostrud proident laboris elit labore sunt minim adipisicing nulla aliquip. In laboris proident ea anim do ad consectetur est aliqua duis officia. Tempor cillum veniam ea consequat cupidatat laborum nulla laboris dolore ipsum exercitation ea pariatur irure aute veniam officia. Officia consequat amet nostrud et incididunt nisi ad nostrud dolore est in. Duis laborum dolor voluptate voluptate reprehenderit non incididunt id qui cupidatat sint.
+          section.step Let's zoom in.
+          section.step Based off data obtained by Motherboard via <a href = "https://www.muckrock.com/foi/kansas-city-331/shotspotter-data-kansas-city-police-department-111302/">public records request</a>, there have been 9,649 ShotSpotter activations between January 1, 2016 and April 1, 2021 (around 5 activations daily on average). The map shows their locations. 
           section.step Fugiat nostrud proident deserunt adipisicing reprehenderit aliqua ea cillum. Adipisicing officia nostrud proident laboris elit labore sunt minim adipisicing nulla aliquip. In laboris proident ea anim do ad consectetur est aliqua duis officia. Tempor cillum veniam ea consequat cupidatat laborum nulla laboris dolore ipsum exercitation ea pariatur irure aute veniam officia. Officia consequat amet nostrud et incididunt nisi ad nostrud dolore est in. Duis laborum dolor voluptate voluptate reprehenderit non incididunt id qui cupidatat sint.
           //- section.step The exact area under ShotSpotter surveillance is not public knowledge, but can be approximated. Here are the coordinates of all ShotSpotter activations in Kansas City between January 1, 2016 and April 20, 2021, obtained by Motherboard via <a href = "https://www.muckrock.com/foi/kansas-city-331/shotspotter-data-kansas-city-police-department-111302/">public records request</a>.
           //- section.step Activations are anonymized to the nearest intersection, so some intersections have multiple activations. Let's scale each intersection by the number of activations at that location. 

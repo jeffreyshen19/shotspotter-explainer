@@ -65,10 +65,10 @@ var scrollVis = function () {
           style = {
             radius: 2,
             fillColor: "#cf000f",
-            color: "black",
+            color: "#2e3131",
             weight: 0.5,
-            opacity: 1,
-            fillOpacity: 0.5
+            opacity: 0.5,
+            fillOpacity: 1,
           }
       }
 
@@ -83,8 +83,8 @@ var scrollVis = function () {
           });
           break;
         case "kcEvictions":
-        case "kcShotspotterActivations":
         case "kcUrbanRenewalAreas":
+        case "kcShotspotterActivations":
           layers[key] = L.geoJSON(data[key], {
             pointToLayer: function (feature, latlng) {
                 return L.circleMarker(latlng, style);
@@ -97,6 +97,7 @@ var scrollVis = function () {
 
     // Fit
     map.fitBounds(layers.kcBoundaries.getBounds());
+    layers.kcShotspotterActivations.addTo(map);
 
     // Add background tile
     L.tileLayer('https://api.maptiler.com/maps/positron/{z}/{x}/{y}.png?key=lTdR1t9ghN06990FNZFA', {
@@ -109,27 +110,28 @@ var scrollVis = function () {
     activateFunctions[0] = function(){
       layers.kcShotSpotterApproxCoverageArea.addTo(map);
       layers.kcBoundaries.addTo(map);
+      map.flyToBounds(layers.kcBoundaries.getBounds());
     };
     updateFunctions[0] = function(){};
 
     activateFunctions[1] = function(){
-      // showLayer(layers.kcBoundaries);
-      // map.fitBounds(layers.kcBoundaries.getBounds());
+      map.flyToBounds(layers.kcShotSpotterApproxCoverageArea.getBounds(), {padding: [5, 5]});
+      map.removeLayer(layers.kcShotspotterActivations);
+      d3.select("#legend-3").style("display", "none");
     };
     updateFunctions[1] = function(){};
 
     activateFunctions[2] = function(){
-      // map.fitBounds(layers.kcBoundaries.getBounds());
-      // layers.kcShotspotterActivations.setStyle({"fillOpacity": 0, "opacity": 0});
+      layers.kcShotspotterActivations.addTo(map);
+      layers.kcShotspotterActivations.eachLayer(function (marker) {
+        marker.setRadius(2);
+      });
+      d3.select("#legend-3").style("display", "inline-block");
     };
     updateFunctions[2] = function(){};
 
     // activateFunctions[3] = function(){
-    //   // layers.kcShotspotterActivations.setStyle({"fillOpacity": 0.5, "opacity": 1});
-    //   // map.fitBounds(layers.kcShotspotterActivations.getBounds(), {padding: [50, 50]});
-    //   // layers.kcShotspotterActivations.eachLayer(function (marker) {
-    //   //   marker.setRadius(2);
-    //   // });
+    //
     // };
     // updateFunctions[3] = function(){};
     //
