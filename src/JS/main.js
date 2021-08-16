@@ -346,7 +346,6 @@ var scrollVis = function () {
         .domain([0, 25])
         .range(["white", "#cf000f"]);
 
-      layers.kcBGsWithData.setStyle({"fillOpacity": 1, "opacity": 1});
       layers.kcBGsWithData.setStyle(function(feature) {
         return {
           color: colorScale(feature.properties["eviction.rate"])
@@ -354,9 +353,25 @@ var scrollVis = function () {
       });
     };
     updateFunctions[21] = function(){};
-    //
-    // activateFunctions[7] = function(){};
-    // updateFunctions[7] = function(){};
+
+    activateFunctions[22] = function(){
+      let colorScale = d3.scaleLinear()
+        .domain([-0.5, 0, 0.5])
+        .range(["#cf000f", "white", "#1f3a93"]);
+
+      layers.kcBGsWithData.setStyle({"fillOpacity": 1, "opacity": 1});
+      layers.kcBGsWithData.setStyle(function(feature) {
+        return {
+          color: feature.properties["PCT_CHANGE_BLACK"] ? colorScale(feature.properties["PCT_CHANGE_BLACK"]) : "rgba(0, 0, 0, 0)"
+        }
+      });
+    };
+    updateFunctions[22] = function(){};
+
+    activateFunctions[23] = function(){};
+    updateFunctions[23] = function(){};
+    activateFunctions[24] = function(){};
+    updateFunctions[24] = function(){};
 
     // activateFunctions[8] = function(){displayHistogram(2)};
     // updateFunctions[8] = function(){};
