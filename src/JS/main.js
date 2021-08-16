@@ -116,13 +116,13 @@ var scrollVis = function () {
 
     activateFunctions[1] = function(){
       map.flyToBounds(layers.kcShotSpotterApproxCoverageArea.getBounds(), {padding: [5, 5]});
-      map.removeLayer(layers.kcShotspotterActivations);
+      layers.kcShotspotterActivations.setStyle({"fillOpacity": 0, "opacity": 0});
       d3.select("#legend-3").style("display", "none");
     };
     updateFunctions[1] = function(){};
 
     activateFunctions[2] = function(){
-      layers.kcShotspotterActivations.addTo(map);
+      layers.kcShotspotterActivations.setStyle({"fillOpacity": 0.5, "opacity": 1});
       layers.kcShotspotterActivations.eachLayer(function (marker) {
         marker.setRadius(2);
       });
@@ -136,10 +136,15 @@ var scrollVis = function () {
       });
     };
     updateFunctions[3] = function(){};
-    //
-    // activateFunctions[4] = function(){
-    // };
-    // updateFunctions[4] = function(){};
+
+    activateFunctions[4] = function(){};
+    updateFunctions[4] = function(){};
+    activateFunctions[5] = function(){};
+    updateFunctions[5] = function(){};
+    activateFunctions[6] = function(){};
+    updateFunctions[6] = function(){};
+    activateFunctions[7] = function(){};
+    updateFunctions[7] = function(){};
     //
     // activateFunctions[5] = function(){
     //   hideLayer(layers.kcShotSpotterApproxCoverageArea);
@@ -148,7 +153,7 @@ var scrollVis = function () {
     // updateFunctions[5] = function(){};
     //
     // activateFunctions[6] = function(){
-    //   layers.kcShotspotterActivations.setStyle({"fillOpacity": 0, "opacity": 0});
+      // layers.kcShotspotterActivations.setStyle({"fillOpacity": 0, "opacity": 0});
     //   showLayer(layers.kcShotSpotterApproxCoverageArea);
     // };
     // updateFunctions[6] = function(){};
