@@ -43,6 +43,16 @@ header{
     #map{
       width: 100%;
       height: 500px;
+
+      #scale{
+        z-index: 314159;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: white;
+        width: 100px;
+        height: 100px;
+      }
     }
 
     #legend{
