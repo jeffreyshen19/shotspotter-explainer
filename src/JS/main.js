@@ -6,7 +6,7 @@ let map, histogram, histogramData, currentHistogram = -1;
 let layers = {};
 
 const colors = {
-  white: "white",
+  white: "#f9f9f9",
   blue: "#1f3a93",
   black: "#2e3131",
   green: "#1e824c",
@@ -196,6 +196,24 @@ var scrollVis = function () {
       layers.kcShotspotterActivations.eachLayer(function (marker) {
         marker.setRadius(2 * Math.sqrt(marker.feature.properties.Activations));
       });
+
+      // d3.select("#chloropleth-legend").style("display", "block");
+      // d3.select("#color-scale").html("");
+      // d3.select("#chloropleth-title").text("ShotSpotter activations ");
+      //
+      // const NUM_STEPS = 5;
+      // const min = domain[0], max = domain[domain.length - 1], step_size = (max - min) / (NUM_STEPS - (diverging ? 1 : 0));
+      //
+      // for(let i = 0; i < NUM_STEPS; i++){
+      //   let element = d3.select("#color-scale").append("div");
+      //
+      //   element.append("div")
+      //     .attr("class", "legend-item")
+      //     .style("background", colorScale(min + i * step_size));
+      //
+      //   element.append("span")
+      //     .text(format(min + i * step_size));
+      // }
     };
     updateFunctions[3] = function(){};
 
@@ -216,7 +234,7 @@ var scrollVis = function () {
     activateFunctions[8] = function(){
       map.flyToBounds(layers.kcBoundaries.getBounds());
       layers.kcShotspotterActivations.setStyle({"fillOpacity": 0, "opacity": 0});
-      generateChloropleth([0, data.maxViolentCrimeRate], [colors.white, colors.black], "VIOLENT CRIME RATE");
+      generateChloropleth([0, data.maxViolentCrimeRate], [colors.white, colors.black], "VIOLENT CRIME RATE", "Violent Crime per 1k People", (x) => Math.round(x * 1000));
     };
     updateFunctions[8] = function(){};
 
@@ -225,12 +243,12 @@ var scrollVis = function () {
         [39.152465, -94.609998],
         [39.018955, -94.509757]
       ]);
-      generateChloropleth([0, data.maxViolentCrimeRate], [colors.white, colors.black], "VIOLENT CRIME RATE");
+      generateChloropleth([0, data.maxViolentCrimeRate], [colors.white, colors.black], "VIOLENT CRIME RATE", "Violent Crime per 1k People", (x) => Math.round(x * 1000));
     };
     updateFunctions[9] = function(){};
 
     activateFunctions[10] = function(){
-      layers.kcBGsWithData.setStyle({"fillOpacity": 1, "opacity": 1});
+      generateChloropleth([0, data.maxViolentCrimeRate], [colors.white, colors.black], "VIOLENT CRIME RATE", "Violent Crime per 1k People", (x) => Math.round(x * 1000));
       layers.kcBGsWithData.eachLayer(function (layer) {
         if(layer.feature.properties.GEOID == '290950034002') {
           layer.setStyle({color: colors.yellow});
@@ -265,13 +283,13 @@ var scrollVis = function () {
     updateFunctions[14] = function(){};
 
     activateFunctions[15] = function(){
-      generateChloropleth([0, 1], [colors.white, colors.blue], "PCT_BLACK");
+      generateChloropleth([0, 1], [colors.white, colors.blue], "PCT_BLACK", "Percent Black", (x) => Math.round(x * 100) + "%");
     };
     updateFunctions[15] = function(){};
 
     activateFunctions[16] = function(){
       map.removeLayer(layers.kcUrbanRenewalAreas);
-      generateChloropleth([0, 1], [colors.white, colors.blue], "PCT_BLACK");
+      generateChloropleth([0, 1], [colors.white, colors.blue], "PCT_BLACK", "Percent Black", (x) => Math.round(x * 100) + "%");
     };
     updateFunctions[16] = function(){};
 
@@ -303,17 +321,17 @@ var scrollVis = function () {
       map.removeLayer(layers.kcccFocus);
       map.removeLayer(layers.troostAve);
       map.removeLayer(layers.kcUrbanRenewalAreas);
-      generateChloropleth([-1.5, 0, 1.5], [colors.blue, colors.white, colors.red], "PCT_CHANGE_RENT");
+      generateChloropleth([-1.5, 0, 1.5], [colors.blue, colors.white, colors.red], "PCT_CHANGE_RENT", "Percent Change in Median Gross Rent", (x) => Math.round(x * 100) + "%", true);
     };
     updateFunctions[20] = function(){};
 
     activateFunctions[21] = function(){
-      generateChloropleth([0, 25], [colors.white, colors.red], "eviction.rate");
+      generateChloropleth([0, 25], [colors.white, colors.red], "eviction.rate", "Eviction Rate", (x) => Math.round(x * 100) + "%");
     };
     updateFunctions[21] = function(){};
 
     activateFunctions[22] = function(){
-      generateChloropleth([-0.5, 0, 0.5], [colors.red, colors.white, colors.blue], "PCT_CHANGE_BLACK");
+      generateChloropleth([-0.5, 0, 0.5], [colors.red, colors.white, colors.blue], "PCT_CHANGE_BLACK", "Percent Change Black Population", (x) => Math.round(x * 100) + "%",true);
     };
     updateFunctions[22] = function(){};
 
@@ -323,7 +341,7 @@ var scrollVis = function () {
     updateFunctions[24] = function(){};
   };
 
-  function generateChloropleth(domain, range, column){
+  function generateChloropleth(domain, range, column, legendTitle, format, diverging){
 
     // Update map
     let colorScale = d3.scaleLinear()
@@ -339,12 +357,30 @@ var scrollVis = function () {
     // Show map
     layers.kcBGsWithData.setStyle({"fillOpacity": 1, "opacity": 1});
 
-    // TODO; update legend
+    // Update legend
+    d3.select("#chloropleth-legend").style("display", "block");
+    d3.select("#color-scale").html("");
+    d3.select("#chloropleth-title").text(legendTitle);
+
+    const NUM_STEPS = 5;
+    const min = domain[0], max = domain[domain.length - 1], step_size = (max - min) / (NUM_STEPS - (diverging ? 1 : 0));
+
+    for(let i = 0; i < NUM_STEPS; i++){
+      let element = d3.select("#color-scale").append("div");
+
+      element.append("div")
+        .attr("class", "legend-item")
+        .style("background", colorScale(min + i * step_size));
+
+      element.append("span")
+        .text(format(min + i * step_size));
+    }
 
   }
 
   function hideChloropleth(){
     layers.kcBGsWithData.setStyle({"fillOpacity": 0, "opacity": 0});
+    d3.select("#chloropleth-legend").style("display", "none");
   }
 
   /**

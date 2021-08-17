@@ -26,7 +26,15 @@ html(lang='en')
       #scrolling-vis.columns.is-variable.is-6
         #vis.column 
           #map
-            #scale 
+            #chloropleth-legend.box
+              p.heading.has-text-weight-bold#chloropleth-title
+              #color-scale
+                .level 
+                  .level-left 
+                    .legend-item(style = "border-radius: 100%; border: 1px solid rgba(46, 48, 48, 0.5); background-color: rgba(207, 0, 15)")
+                    span 1 activaitons
+                    .legend-item(style = "border-radius: 100%; border: 1px solid rgba(46, 48, 48, 0.5); background-color: rgba(207, 0, 15); width: 15px; height: 15px;")
+                    span 1 activaitons
           #legend
             div
               .legend-item(style = "border: 2px solid rgba(46, 48, 48, 0.7); ") 
@@ -55,7 +63,7 @@ html(lang='en')
           section.step In particular, ShotSpotter was deployed in Kansas City as part of a project extending one of the city’s express bus lines. According to <a href = "https://www.vice.com/en/article/88nd3z/gunshot-detecting-tech-is-summoning-armed-police-to-black-neighborhoods?utm_source=pocket_mylist">Motherboard</a>, ShotSpotter’s service area was chosen to provide the “highest amount of coverage to the areas most densely and heavily traveled by the public transit lines.” As shown on the map, ShotSpotter’s coverage area intersects two express bus lines: Troost MAX and Prospect MAX. 
           section.step The deployment of ShotSpotter must be seen in concert with ongoing efforts by the city government and private business interests to redevelop and gentrify areas east of Troost Ave corridor. The map shows Troost Ave.
           section.step Historically, Troost Ave <a href = "https://www.kansascity.com/news/your-kcq/article251695313.html">sharply divided</a> an affluent white community, on the west of the street, and a majority Black community on the east side. This segregation was enforced by racist policies such as redlining, restrictive covenants, and disinvestment, a form of spatial apartheid so successful that the street has been <a href = "https://www.troostvillage.org/about/history/">referred</a> to by some as the “Berlin Wall of Kansas City”. 
-          section.step These divisions persist today. For instance, educational attainment and housing values remain higher on the west side of Troost and the area remains segregated, as can be seen in the map. (Block groups which are bluer have a higher proportion of Black residents). 
+          section.step These divisions persist today. For instance, educational attainment and housing values remain higher on the west side of Troost and the area remains segregated, as can be seen in the map.
             p.has-text-grey.mt-2.is-size-7 Data from 2019 ACS 1-Year estimate.
           section.step Given this racist history, it is no coincidence that ShotSpotter is located nearly entirely east of Troost Ave, in an area that has some census block groups which are only 1% non-Hispanic white and over 96% Black. 
           section.step In recent years, Kansas City has attempted to redevelop areas east of Troost Ave. For instance, the local government has <a href = "https://data.kcmo.org/Land-Use/Urban-Renewal/k25n-6b98">designated</a> multiple “urban renewal areas”—areas designed to “encourage investment and assist in the removal of blight and blighting conditions”—which fall within ShotSpotter’s coverage area (as shown on map).
