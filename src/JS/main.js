@@ -189,6 +189,7 @@ var scrollVis = function () {
         marker.setRadius(2);
       });
       d3.select("#legend-3").style("display", "inline-block");
+      d3.select("#chloropleth-legend").style("display", "none");
     };
     updateFunctions[2] = function(){};
 
@@ -196,24 +197,7 @@ var scrollVis = function () {
       layers.kcShotspotterActivations.eachLayer(function (marker) {
         marker.setRadius(2 * Math.sqrt(marker.feature.properties.Activations));
       });
-
-      // d3.select("#chloropleth-legend").style("display", "block");
-      // d3.select("#color-scale").html("");
-      // d3.select("#chloropleth-title").text("ShotSpotter activations ");
-      //
-      // const NUM_STEPS = 5;
-      // const min = domain[0], max = domain[domain.length - 1], step_size = (max - min) / (NUM_STEPS - (diverging ? 1 : 0));
-      //
-      // for(let i = 0; i < NUM_STEPS; i++){
-      //   let element = d3.select("#color-scale").append("div");
-      //
-      //   element.append("div")
-      //     .attr("class", "legend-item")
-      //     .style("background", colorScale(min + i * step_size));
-      //
-      //   element.append("span")
-      //     .text(format(min + i * step_size));
-      // }
+      showShotSpotterLegend();
     };
     updateFunctions[3] = function(){};
 
@@ -226,6 +210,7 @@ var scrollVis = function () {
 
     activateFunctions[7] = function(){
       hideChloropleth();
+      showShotSpotterLegend();
       map.flyToBounds(layers.kcShotSpotterApproxCoverageArea.getBounds(), {padding: [5, 5]});
       layers.kcShotspotterActivations.setStyle({"fillOpacity": 0.5, "opacity": 1});
     };
@@ -381,6 +366,37 @@ var scrollVis = function () {
   function hideChloropleth(){
     layers.kcBGsWithData.setStyle({"fillOpacity": 0, "opacity": 0});
     d3.select("#chloropleth-legend").style("display", "none");
+  }
+
+  function showShotSpotterLegend(){
+    d3.select("#chloropleth-legend").style("display", "block");
+    d3.select("#color-scale").html("");
+    d3.select("#chloropleth-title").text("ShotSpotter activations");
+
+    [1, 24, 48].forEach(function(activations, i){
+      let radius = 2 * Math.sqrt(activations);
+      let offset = 2 * Math.sqrt(48) - radius;
+
+      let element = d3.select("#color-scale")
+        .append("div")
+          .attr("class", "level")
+          .style("margin-bottom", (i == 2 ? 0 : radius / 2) + "px")
+          .style("margin-left", offset + "px")
+        .append("div")
+          .attr("class", "level-left");
+
+      element.append("div")
+        .attr("class", "legend-item level-item")
+        .style("border-radius", "100%")
+        .style("border", "1px solid rgba(46, 48, 48, 0.5)")
+        .style("background-color", "rgba(207, 0, 15)")
+        .style("width", 2 * radius + "px")
+        .style("height", 2 * radius + "px")
+        .style("margin-right", offset + 5 + "px");
+
+      element.append("span")
+        .text(activations);
+    });
   }
 
   /**
