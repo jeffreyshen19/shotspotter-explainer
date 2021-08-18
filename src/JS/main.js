@@ -5,6 +5,9 @@ let width = document.getElementById("vis").offsetWidth - margin.left - margin.ri
 let map, histogram, histogramData, currentHistogram = -1;
 let layers = {};
 
+const ANIMATION_LENGTH = 300;
+const ANIMATION_STEP = 10;
+
 const colors = {
   white: "#f9f9f9",
   blue: "#1f3a93",
@@ -45,6 +48,7 @@ var scrollVis = function () {
       scrollWheelZoom: false,
       doubleClickZoom: false,
       dragging: false,
+      preferCanvas: true
     });
 
     // Initialize geoJSON layers
@@ -70,7 +74,7 @@ var scrollVis = function () {
         case "kccc39":
           style = {
             "color": colors.black,
-            "weight": 3
+            "weight": 2
           };
           break;
         case "kcShotSpotterApproxCoverageArea":
@@ -81,23 +85,20 @@ var scrollVis = function () {
             "fillOpacity": 0,
           };
           break;
-        case "kcShotspotterActivations":
+        case "kcShotSpotterActivations":
           style = {
             radius: 2,
             fillColor: colors.red,
             color: colors.black,
             weight: 0.5,
-            opacity: 0.5,
-            fillOpacity: 1,
           }
           break;
         case "kcUrbanRenewalAreas":
+        case "kcccFocus":
           style = {
             radius: 4,
             fillColor: colors.black,
             weight: 0,
-            opacity: 1,
-            fillOpacity: 1,
           }
       }
 
@@ -115,10 +116,20 @@ var scrollVis = function () {
           break;
         case "kcEvictions":
         case "kcUrbanRenewalAreas":
-        case "kcShotspotterActivations":
+        case "kcShotSpotterActivations":
           layers[key] = L.geoJSON(data[key], {
             pointToLayer: function (feature, latlng) {
                 return L.circleMarker(latlng, style);
+            }
+          });
+          break;
+        case "kcccFocus":
+          layers[key] = L.geoJSON(data[key], {
+            pointToLayer: function (feature, latlng) {
+              return L.circleMarker(latlng, style).bindTooltip(feature.properties.label, {
+                permanent: true,
+                direction: feature.properties.label == "31st & Troost" ? "left" : "right",
+              });
             }
           });
           break;
@@ -128,27 +139,22 @@ var scrollVis = function () {
 
     // Fit
     map.fitBounds(layers.kcBoundaries.getBounds());
-    layers.kcShotspotterActivations.addTo(map);
+    layers.kcShotSpotterActivations.addTo(map);
     layers.kcBGsWithData.addTo(map);
+    layers.kcccFocus.addTo(map);
+    layers.kcUrbanRenewalAreas.addTo(map);
 
-    layers.kcShotspotterActivations.setStyle({"fillOpacity": 0, "opacity": 0});
+    layers.kcShotSpotterActivations.setStyle({"opacity": 0, "fillOpacity": 0});
+    layers.kcccFocus.setStyle({"opacity": 0, "fillOpacity": 0});
+    layers.kcUrbanRenewalAreas.setStyle({"opacity": 0, "fillOpacity": 0});
+    layers.kcShotSpotterActivations.visible = false;
+    layers.kcShotSpotterActivations.maxFill = 0.5;
+    layers.kcccFocus.visible = false;
+    layers.kcccFocus.maxFill = 1;
+    layers.kcUrbanRenewalAreas.visible = false;
+    layers.kcUrbanRenewalAreas.maxFill = 1;
+
     hideChloropleth();
-
-    layers.kcccFocus = L.layerGroup([
-      [39.069872, -94.552827, "31st & Prospect"],
-      [39.070495, -94.571334, "31st & Troost"]
-    ].map(function(coords, i){
-      return L.circleMarker([coords[0], coords[1]], {
-        radius: 4,
-        fillColor: colors.black,
-        weight: 0,
-        opacity: 1,
-        fillOpacity: 1
-      }).bindTooltip(coords[2], {
-        permanent: true,
-        direction: i == 0 ? "right" : "left",
-      });
-    }));
 
     layers.kccc39.bindTooltip("39th Street Corridor", {
       permanent: true,
@@ -165,6 +171,10 @@ var scrollVis = function () {
     L.tileLayer('https://api.maptiler.com/maps/positron/{z}/{x}/{y}.png?key=lTdR1t9ghN06990FNZFA', {
       attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
     }).addTo(map);
+
+    d3.select("#loading").style("display", "none");
+    d3.select("#map").style("visibility", "visible");
+    d3.select("#legend").style("visibility", "visible");
   };
 
   // Handles display logic for sections
@@ -178,23 +188,23 @@ var scrollVis = function () {
 
     activateFunctions[1] = function(){
       map.flyToBounds(layers.kcShotSpotterApproxCoverageArea.getBounds(), {padding: [5, 5]});
-      layers.kcShotspotterActivations.setStyle({"fillOpacity": 0, "opacity": 0});
+      hidePointLayer(layers.kcShotSpotterActivations);
       d3.select("#legend-3").style("display", "none");
     };
     updateFunctions[1] = function(){};
 
     activateFunctions[2] = function(){
-      layers.kcShotspotterActivations.setStyle({"fillOpacity": 0.5, "opacity": 1});
-      layers.kcShotspotterActivations.eachLayer(function (marker) {
+      layers.kcShotSpotterActivations.eachLayer(function (marker) {
         marker.setRadius(2);
       });
+      showPointLayer(layers.kcShotSpotterActivations);
       d3.select("#legend-3").style("display", "inline-block");
       d3.select("#chloropleth-legend").style("display", "none");
     };
     updateFunctions[2] = function(){};
 
     activateFunctions[3] = function(){
-      layers.kcShotspotterActivations.eachLayer(function (marker) {
+      layers.kcShotSpotterActivations.eachLayer(function (marker) {
         marker.setRadius(2 * Math.sqrt(marker.feature.properties.Activations));
       });
       showShotSpotterLegend();
@@ -212,14 +222,14 @@ var scrollVis = function () {
       hideChloropleth();
       showShotSpotterLegend();
       map.flyToBounds(layers.kcShotSpotterApproxCoverageArea.getBounds(), {padding: [5, 5]});
-      layers.kcShotspotterActivations.setStyle({"fillOpacity": 0.5, "opacity": 1});
+      showPointLayer(layers.kcShotSpotterActivations);
     };
     updateFunctions[7] = function(){};
 
     activateFunctions[8] = function(){
       d3.select("#legend-3").style("display", "none");
       map.flyToBounds(layers.kcBoundaries.getBounds());
-      layers.kcShotspotterActivations.setStyle({"fillOpacity": 0, "opacity": 0});
+      hidePointLayer(layers.kcShotSpotterActivations);
       generateChloropleth([0, data.maxViolentCrimeRate], [colors.white, colors.black], "VIOLENT CRIME RATE", "Violent Crime per 1k People", (x) => Math.round(x * 1000));
     };
     updateFunctions[8] = function(){};
@@ -277,7 +287,7 @@ var scrollVis = function () {
     updateFunctions[15] = function(){};
 
     activateFunctions[16] = function(){
-      map.removeLayer(layers.kcUrbanRenewalAreas);
+      hidePointLayer(layers.kcUrbanRenewalAreas);
       generateChloropleth([0, 1], [colors.white, colors.blue], "PCT_BLACK", "Percent Black", (x) => Math.round(x * 100) + "%");
       d3.select("#legend-5").style("display", "none");
     };
@@ -286,34 +296,34 @@ var scrollVis = function () {
     activateFunctions[17] = function(){
       hideChloropleth();
       d3.select("#legend-5").style("display", "inline-block");
-      layers.kcUrbanRenewalAreas.addTo(map);
-      map.removeLayer(layers.kccc39);
+      showPointLayer(layers.kcUrbanRenewalAreas);
+      hidePointLayer(layers.kcccFocus);
       map.removeLayer(layers.kcccFocus);
     };
     updateFunctions[17] = function(){};
 
     activateFunctions[18] = function(){
       layers.kccc39.addTo(map);
-      layers.kcccFocus.addTo(map);
+      showPointLayer(layers.kcccFocus);
     };
     updateFunctions[18] = function(){};
 
     activateFunctions[19] = function(){
       hideChloropleth();
+      showPointLayer(layers.kcccFocus);
+      showPointLayer(layers.kcUrbanRenewalAreas);
       layers.kccc39.addTo(map);
-      layers.kcccFocus.addTo(map);
       layers.troostAve.addTo(map);
-      layers.kcUrbanRenewalAreas.addTo(map);
       d3.select("#legend-5").style("display", "inline-block");
     };
     updateFunctions[19] = function(){};
 
     activateFunctions[20] = function(){
       d3.select("#legend-5").style("display", "none");
+      hidePointLayer(layers.kcccFocus);
+      hidePointLayer(layers.kcUrbanRenewalAreas);
       map.removeLayer(layers.kccc39);
-      map.removeLayer(layers.kcccFocus);
       map.removeLayer(layers.troostAve);
-      map.removeLayer(layers.kcUrbanRenewalAreas);
       generateChloropleth([-1.5, 0, 1.5], [colors.blue, colors.white, colors.red], "PCT_CHANGE_RENT", "Percent Change in Median Gross Rent", (x) => Math.round(x * 100) + "%", true);
     };
     updateFunctions[20] = function(){};
@@ -369,6 +379,32 @@ var scrollVis = function () {
         .text(format(min + i * step_size));
     }
 
+  }
+
+  function showPointLayer(layer){
+    if(layer.visible) return;
+    let i = 0;
+
+    let interval = setInterval(function(){
+      layer.setStyle({"fillOpacity": i / ANIMATION_LENGTH * layer.maxFill, "opacity": i / ANIMATION_LENGTH * 1});
+      if(i >= ANIMATION_LENGTH) clearInterval(interval);
+      i += ANIMATION_STEP;
+    }, ANIMATION_STEP);
+
+    layer.visible = true;
+  }
+
+  function hidePointLayer(layer){
+    if(!layer.visible) return;
+    let i = 0;
+
+    let interval = setInterval(function(){
+      layer.setStyle({"fillOpacity": layer.maxFill - i / ANIMATION_LENGTH * layer.maxFill, "opacity": 1 - i / ANIMATION_LENGTH * 1});
+      if(i >= ANIMATION_LENGTH) clearInterval(interval);
+      i += ANIMATION_STEP;
+    }, ANIMATION_STEP);
+
+    layer.visible = false;
   }
 
   function hideChloropleth(){
@@ -446,16 +482,18 @@ Promise.all([
   d3.json("data/public/kansas-city-urban-renewal-areas.geojson"),
   d3.json("data/public/troost-ave.geojson"),
   d3.json("data/public/kccc-39.geojson"),
+  d3.json("data/public/kccc-areas.geojson"),
 ]).then(function(data){ // Process data
   data = {
     "kcBGsWithData": data[0],
     "kcBoundaries": data[1],
     "kcMaxBusLines": data[2],
-    "kcShotspotterActivations": data[3],
+    "kcShotSpotterActivations": data[3],
     "kcShotSpotterApproxCoverageArea": data[4],
     "kcUrbanRenewalAreas": data[5],
     "troostAve": data[6],
     "kccc39": data[7],
+    "kcccFocus": data[8],
   };
 
   // Cast to real
@@ -473,9 +511,6 @@ Promise.all([
   return data;
 })
 .then(function(data) {
-  d3.select("#loading").style("display", "none");
-  d3.select("#map").style("display", "block");
-  d3.select("#legend").style("display", "block");
 
   var plot = scrollVis();
 
