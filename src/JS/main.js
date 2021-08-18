@@ -65,6 +65,12 @@ var scrollVis = function () {
             "fillOpacity": 0,
           };
           break;
+        case "kcBGsWithData":
+          style = {
+            "weight": 0,
+            "transition": "0.3s all"
+          };
+          break;
         case "kcMaxBusLines":
         case "troostAve":
           style = {
@@ -92,6 +98,8 @@ var scrollVis = function () {
             fillColor: colors.red,
             color: colors.black,
             weight: 0.5,
+            opacity: 1,
+            fillOpacity: 0.5,
           }
           break;
         case "kcUrbanRenewalAreas":
@@ -146,6 +154,7 @@ var scrollVis = function () {
     layers.troostAve.setStyle({"opacity": 0, "fillOpacity": 0});
     layers.kcMaxBusLines.setStyle({"opacity": 0, "fillOpacity": 0});
     layers.kccc39.setStyle({"opacity": 0, "fillOpacity": 0});
+    layers.kcBGsWithData.setStyle({"opacity": 0, "fillOpacity": 0});
     layers.kcShotSpotterActivations.visible = false;
     layers.kcShotSpotterActivations.maxFill = 0.5;
     layers.kcccFocus.visible = false;
@@ -158,6 +167,8 @@ var scrollVis = function () {
     layers.kcMaxBusLines.maxFill = 1;
     layers.kccc39.visible = false;
     layers.kccc39.maxFill = 1;
+    layers.kcBGsWithData.visible = false;
+    layers.kcBGsWithData.maxFill = 1;
 
     hideChloropleth();
 
@@ -202,7 +213,7 @@ var scrollVis = function () {
       });
       showLayer(layers.kcShotSpotterActivations);
       d3.select("#legend-3").style("display", "inline-block");
-      d3.select("#chloropleth-legend").style("display", "none");
+      d3.select("#chloropleth-legend").style("opacity", "0");
     };
     updateFunctions[2] = function(){};
 
@@ -332,7 +343,7 @@ var scrollVis = function () {
     updateFunctions[20] = function(){};
 
     activateFunctions[21] = function(){
-      generateChloropleth([0, 25], [colors.white, colors.red], "eviction.rate", "Eviction Rate", (x) => Math.round(x * 100) + "%");
+      generateChloropleth([0, 25], [colors.white, colors.red], "eviction.rate", "Eviction Rate", (x) => Math.round(x) + "%");
     };
     updateFunctions[21] = function(){};
 
@@ -361,10 +372,10 @@ var scrollVis = function () {
     });
 
     // Show map
-    layers.kcBGsWithData.setStyle({"fillOpacity": 1, "opacity": 1});
+    showLayer(layers.kcBGsWithData);
 
     // Update legend
-    d3.select("#chloropleth-legend").style("display", "block");
+    d3.select("#chloropleth-legend").style("opacity", "1");
     d3.select("#color-scale").html("");
     d3.select("#chloropleth-title").text(legendTitle);
 
@@ -382,6 +393,11 @@ var scrollVis = function () {
         .text(format(min + i * step_size));
     }
 
+  }
+
+  function hideChloropleth(){
+    hideLayer(layers.kcBGsWithData);
+    d3.select("#chloropleth-legend").style("opacity", "0");
   }
 
   function showLayer(layer){
@@ -410,13 +426,8 @@ var scrollVis = function () {
     layer.visible = false;
   }
 
-  function hideChloropleth(){
-    layers.kcBGsWithData.setStyle({"fillOpacity": 0, "opacity": 0});
-    d3.select("#chloropleth-legend").style("display", "none");
-  }
-
   function showShotSpotterLegend(){
-    d3.select("#chloropleth-legend").style("display", "block");
+    d3.select("#chloropleth-legend").style("opacity", "1");
     d3.select("#color-scale").html("");
     d3.select("#chloropleth-title").text("ShotSpotter activations");
 

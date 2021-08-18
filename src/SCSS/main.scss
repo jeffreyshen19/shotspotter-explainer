@@ -62,10 +62,6 @@ header{
         padding: 10px;
         margin-bottom: 0;
       }
-
-      path{
-        transition: all 0.75s;
-      }
     }
 
     #legend{
@@ -75,6 +71,10 @@ header{
       div{
         display: inline-block;
       }
+    }
+
+    #legend, #chloropleth-legend{
+      transition: 0.3s all;
     }
 
     .legend-item{
