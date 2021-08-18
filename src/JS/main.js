@@ -48,8 +48,8 @@ var scrollVis = function () {
       scrollWheelZoom: false,
       doubleClickZoom: false,
       dragging: false,
-      preferCanvas: true
     });
+    var canvas = L.canvas();
 
     // Initialize geoJSON layers
     for(let key in data.layers){
@@ -100,6 +100,7 @@ var scrollVis = function () {
             weight: 0.5,
             opacity: 1,
             fillOpacity: 0.5,
+            renderer: canvas,
           }
           break;
         case "kcUrbanRenewalAreas":
@@ -144,31 +145,21 @@ var scrollVis = function () {
       }
 
       layers[key].addTo(map);
+      if(!(key == "kcShotSpotterApproxCoverageArea" || key == "kcBoundaries")){
+        layers[key].setStyle({"opacity": 0, "fillOpacity": 0});
+      }
     }
 
     // Fit
     map.fitBounds(layers.kcBoundaries.getBounds());
-    layers.kcShotSpotterActivations.setStyle({"opacity": 0, "fillOpacity": 0});
-    layers.kcccFocus.setStyle({"opacity": 0, "fillOpacity": 0});
-    layers.kcUrbanRenewalAreas.setStyle({"opacity": 0, "fillOpacity": 0});
-    layers.troostAve.setStyle({"opacity": 0, "fillOpacity": 0});
-    layers.kcMaxBusLines.setStyle({"opacity": 0, "fillOpacity": 0});
-    layers.kccc39.setStyle({"opacity": 0, "fillOpacity": 0});
-    layers.kcBGsWithData.setStyle({"opacity": 0, "fillOpacity": 0});
-    layers.kcShotSpotterActivations.visible = false;
-    layers.kcShotSpotterActivations.maxFill = 0.5;
-    layers.kcccFocus.visible = false;
     layers.kcccFocus.maxFill = 1;
-    layers.kcUrbanRenewalAreas.visible = false;
     layers.kcUrbanRenewalAreas.maxFill = 1;
-    layers.troostAve.visible = false;
     layers.troostAve.maxFill = 1;
-    layers.kcMaxBusLines.visible = false;
     layers.kcMaxBusLines.maxFill = 1;
-    layers.kccc39.visible = false;
     layers.kccc39.maxFill = 1;
-    layers.kcBGsWithData.visible = false;
     layers.kcBGsWithData.maxFill = 1;
+    layers.kcShotSpotterActivations.isScaled = false;
+    layers.kcShotSpotterActivations.isVisible = false;
 
     hideChloropleth();
 
@@ -202,27 +193,24 @@ var scrollVis = function () {
 
     activateFunctions[1] = function(){
       map.flyToBounds(layers.kcShotSpotterApproxCoverageArea.getBounds(), {padding: [5, 5]});
-      hideLayer(layers.kcShotSpotterActivations);
+      hideShotSpotterActivations();
       d3.select("#legend-3").style("display", "none");
     };
     updateFunctions[1] = function(){};
 
     activateFunctions[2] = function(){
-      layers.kcShotSpotterActivations.eachLayer(function (marker) {
-        marker.setRadius(2);
-      });
-      showLayer(layers.kcShotSpotterActivations);
+      showShotSpotterActivations(false);
       d3.select("#legend-3").style("display", "inline-block");
       d3.select("#chloropleth-legend").style("opacity", "0");
     };
     updateFunctions[2] = function(){};
 
     activateFunctions[3] = function(){
-      layers.kcShotSpotterActivations.eachLayer(function (marker) {
-        marker.setRadius(2 * Math.sqrt(marker.feature.properties.Activations));
-      });
+      let i = 0;
+      showShotSpotterActivations(true);
       showShotSpotterLegend();
     };
+
     updateFunctions[3] = function(){};
 
     activateFunctions[4] = function(){};
@@ -236,14 +224,14 @@ var scrollVis = function () {
       hideChloropleth();
       showShotSpotterLegend();
       map.flyToBounds(layers.kcShotSpotterApproxCoverageArea.getBounds(), {padding: [5, 5]});
-      showLayer(layers.kcShotSpotterActivations);
+      showShotSpotterActivations(true);
     };
     updateFunctions[7] = function(){};
 
     activateFunctions[8] = function(){
       d3.select("#legend-3").style("display", "none");
       map.flyToBounds(layers.kcBoundaries.getBounds());
-      hideLayer(layers.kcShotSpotterActivations);
+      hideShotSpotterActivations();
       generateChloropleth([0, data.maxViolentCrimeRate], [colors.white, colors.black], "VIOLENT CRIME RATE", "Violent Crime per 1k People", (x) => Math.round(x * 1000));
     };
     updateFunctions[8] = function(){};
@@ -338,7 +326,7 @@ var scrollVis = function () {
       hideLayer(layers.kcUrbanRenewalAreas);
       hideLayer(layers.troostAve);
       hideLayer(layers.kccc39);
-      generateChloropleth([-1.5, 0, 1.5], [colors.blue, colors.white, colors.red], "PCT_CHANGE_RENT", "Percent Change in Median Gross Rent", (x) => Math.round(x * 100) + "%", true);
+      generateChloropleth([-1.5, 0, 1.5], [colors.blue, colors.white, colors.red], "PCT_CHANGE_RENT", "Pct. Change Median Gross Rent", (x) => Math.round(x * 100) + "%", true);
     };
     updateFunctions[20] = function(){};
 
@@ -348,7 +336,7 @@ var scrollVis = function () {
     updateFunctions[21] = function(){};
 
     activateFunctions[22] = function(){
-      generateChloropleth([-0.5, 0, 0.5], [colors.red, colors.white, colors.blue], "PCT_CHANGE_BLACK", "Percent Change Black Population", (x) => Math.round(x * 100) + "%",true);
+      generateChloropleth([-0.5, 0, 0.5], [colors.red, colors.white, colors.blue], "PCT_CHANGE_BLACK", "Pct. Change Black Population", (x) => Math.round(x * 100) + "%",true);
     };
     updateFunctions[22] = function(){};
 
@@ -357,6 +345,41 @@ var scrollVis = function () {
     activateFunctions[24] = function(){};
     updateFunctions[24] = function(){};
   };
+
+  //TODO await
+  function showShotSpotterActivations(scale){
+    let i = 0;
+    let interval = setInterval(function(){
+      if(!layers.kcShotSpotterActivations.isVisible) layers.kcShotSpotterActivations.setStyle({"fillOpacity": i / ANIMATION_LENGTH * 0.5, "opacity": i / ANIMATION_LENGTH});
+      layers.kcShotSpotterActivations.eachLayer(function (marker) {
+        let radius;
+
+        if(scale) radius = 2 * Math.max(Math.sqrt(i / ANIMATION_LENGTH * marker.feature.properties.Activations), 1);
+        else radius = 2 * Math.max(Math.sqrt((1 - i / ANIMATION_LENGTH) * marker.feature.properties.Activations), 1);
+
+        if(scale && !layers.kcShotSpotterActivations.isScaled) marker.setRadius(radius);
+        else if(!scale && layers.kcShotSpotterActivations.isScaled) marker.setRadius(radius);
+      });
+      if(i >= ANIMATION_LENGTH) {
+        clearInterval(interval);
+        layers.kcShotSpotterActivations.isVisible = true;
+        layers.kcShotSpotterActivations.isScaled = scale;
+      }
+      i += ANIMATION_STEP;
+    }, ANIMATION_STEP);
+  }
+
+  function hideShotSpotterActivations(){
+    let i = 0;
+    let interval = setInterval(function(){
+      if(layers.kcShotSpotterActivations.isVisible) layers.kcShotSpotterActivations.setStyle({"fillOpacity": 0.5 - i / ANIMATION_LENGTH * 0.5, "opacity": 1 - i / ANIMATION_LENGTH});
+      if(i >= ANIMATION_LENGTH) {
+        clearInterval(interval);
+        layers.kcShotSpotterActivations.isVisible = false;
+      }
+      i += ANIMATION_STEP;
+    }, ANIMATION_STEP);
+  }
 
   function generateChloropleth(domain, range, column, legendTitle, format, diverging){
 
@@ -372,7 +395,7 @@ var scrollVis = function () {
     });
 
     // Show map
-    showLayer(layers.kcBGsWithData);
+    layers.kcBGsWithData.setStyle({"fillOpacity": 1});
 
     // Update legend
     d3.select("#chloropleth-legend").style("opacity", "1");
@@ -396,34 +419,16 @@ var scrollVis = function () {
   }
 
   function hideChloropleth(){
-    hideLayer(layers.kcBGsWithData);
+    layers.kcBGsWithData.setStyle({"fillOpacity": 0});
     d3.select("#chloropleth-legend").style("opacity", "0");
   }
 
   function showLayer(layer){
-    if(layer.visible) return;
-    let i = 0;
-
-    let interval = setInterval(function(){
-      layer.setStyle({"fillOpacity": i / ANIMATION_LENGTH * layer.maxFill, "opacity": i / ANIMATION_LENGTH * 1});
-      if(i >= ANIMATION_LENGTH) clearInterval(interval);
-      i += ANIMATION_STEP;
-    }, ANIMATION_STEP);
-
-    layer.visible = true;
+    layer.setStyle({"fillOpacity": layer.maxFill, "opacity": 1});
   }
 
   function hideLayer(layer){
-    if(!layer.visible) return;
-    let i = 0;
-
-    let interval = setInterval(function(){
-      layer.setStyle({"fillOpacity": layer.maxFill - i / ANIMATION_LENGTH * layer.maxFill, "opacity": 1 - i / ANIMATION_LENGTH * 1});
-      if(i >= ANIMATION_LENGTH) clearInterval(interval);
-      i += ANIMATION_STEP;
-    }, ANIMATION_STEP);
-
-    layer.visible = false;
+    layer.setStyle({"fillOpacity": 0, "opacity": 0});
   }
 
   function showShotSpotterLegend(){
