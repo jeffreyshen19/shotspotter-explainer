@@ -77,6 +77,10 @@ header{
       }
     }
 
+    .tooltip{
+      visibility: hidden;
+    }
+
     #legend, #chloropleth-legend{
       transition: 0.3s all;
     }

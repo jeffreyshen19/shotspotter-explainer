@@ -141,6 +141,7 @@ var scrollVis = function () {
               return L.circleMarker(latlng, style).bindTooltip(feature.properties.label, {
                 permanent: true,
                 direction: feature.properties.label == "31st & Troost" ? "left" : "right",
+                className: "tooltip focus-tooltip"
               });
             }
           });
@@ -163,12 +164,14 @@ var scrollVis = function () {
     layers.kccc39.bindTooltip("39th Street Corridor", {
       permanent: true,
       direction: "left",
-      offset: L.point([-50, 0])
+      offset: L.point([-50, 0]),
+      className: "tooltip tooltip-39"
     });
 
     layers.troostAve.bindTooltip("Troost Ave", {
       permanent: true,
       direction: "left",
+      className: "troost-tooltip tooltip"
     })
 
     // Add background tile
@@ -264,6 +267,7 @@ var scrollVis = function () {
       showLayer(layers.kcMaxBusLines);
       layers.kcShotSpotterApproxCoverageArea.bringToFront();
       hideLayer(layers.troostAve);
+      d3.select(".troost-tooltip").style("visibility", "hidden");
     };
     updateFunctions[12] = function(){};
 
@@ -271,6 +275,7 @@ var scrollVis = function () {
       hideLayer(layers.kcMaxBusLines);
       hideLegend("#legend-4");
       showLayer(layers.troostAve);
+      d3.select(".troost-tooltip").style("visibility", "visible");
       layers.kcShotSpotterApproxCoverageArea.bringToFront();
     };
     updateFunctions[13] = function(){};
@@ -295,6 +300,8 @@ var scrollVis = function () {
     activateFunctions[17] = function(){
       hideChloropleth();
       showLegend("#legend-5");
+      d3.selectAll(".focus-tooltip").style("visibility", "hidden");
+      d3.select(".tooltip-39").style("visibility", "hidden");
       showLayer(layers.kcUrbanRenewalAreas);
       hideLayer(layers.kcccFocus);
       hideLayer(layers.kccc39);
@@ -302,6 +309,8 @@ var scrollVis = function () {
     updateFunctions[17] = function(){};
 
     activateFunctions[18] = function(){
+      d3.selectAll(".focus-tooltip").style("visibility", "visible");
+      d3.select(".tooltip-39").style("visibility", "visible");
       showLayer(layers.kccc39);
       showLayer(layers.kcccFocus);
     };
@@ -313,6 +322,9 @@ var scrollVis = function () {
       showLayer(layers.kcUrbanRenewalAreas);
       showLayer(layers.troostAve);
       showLayer(layers.kccc39);
+      d3.selectAll(".focus-tooltip").style("visibility", "visible");
+      d3.select(".tooltip-39").style("visibility", "visible");
+      d3.select(".troost-tooltip").style("visibility", "visible");
       showLegend("#legend-5");
     };
     updateFunctions[19] = function(){};
@@ -323,6 +335,9 @@ var scrollVis = function () {
       hideLayer(layers.kcUrbanRenewalAreas);
       hideLayer(layers.troostAve);
       hideLayer(layers.kccc39);
+      d3.selectAll(".focus-tooltip").style("visibility", "hidden");
+      d3.select(".tooltip-39").style("visibility", "hidden");
+      d3.select(".troost-tooltip").style("visibility", "hidden");
       generateChloropleth([-1.5, 0, 1.5], [colors.blue, colors.white, colors.red], "PCT_CHANGE_RENT", "Pct. Change Median Gross Rent", (x) => Math.round(x * 100) + "%", true);
     };
     updateFunctions[20] = function(){};
@@ -352,6 +367,7 @@ var scrollVis = function () {
   }
 
   async function showShotSpotterActivations(scale){
+    console.log("showing");
     return new Promise((resolve, reject) => {
       let i = 0;
       let interval = setInterval(function(){
@@ -369,6 +385,7 @@ var scrollVis = function () {
           clearInterval(interval);
           layers.kcShotSpotterActivations.isVisible = true;
           layers.kcShotSpotterActivations.isScaled = scale;
+          console.log("done showing");
           resolve();
         }
         i += ANIMATION_STEP;
@@ -378,6 +395,7 @@ var scrollVis = function () {
   }
 
   async function hideShotSpotterActivations(){
+    console.log("hiding");
     return new Promise((resolve, reject) => {
       let i = 0;
       let interval = setInterval(function(){
@@ -385,6 +403,7 @@ var scrollVis = function () {
         if(i >= ANIMATION_LENGTH) {
           clearInterval(interval);
           layers.kcShotSpotterActivations.isVisible = false;
+          console.log("done hiding");
           resolve();
         }
         i += ANIMATION_STEP;
