@@ -8,7 +8,7 @@ html(lang='en')
     meta(name = "author" content = "Jeffrey Shen")
     title ADD TITLE
     //- link(rel="icon" type="image/png" href="/assets/graphics/favicon.png")
-    //- link(href='bower_components/font-awesome/css/all.min.css', rel='stylesheet', type='text/css')
+    link(href='bower_components/font-awesome/css/all.min.css', rel='stylesheet', type='text/css')
     link(rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
     integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
     crossorigin="")
@@ -25,11 +25,13 @@ html(lang='en')
     .container
       #scrolling-vis.columns.is-variable.is-6
         #vis.column 
-          #map
+          p#loading Loading 
+            i.fas.fa-spinner.fa-spin
+          #map(style="display:none")
             #chloropleth-legend.box
               p.heading.has-text-weight-bold#chloropleth-title
               #color-scale
-          #legend
+          #legend(style="display:none")
             div
               .legend-item(style = "border: 2px solid rgba(46, 48, 48, 0.7); ") 
               span Kansas City, MO boundaries

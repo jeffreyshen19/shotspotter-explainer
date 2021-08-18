@@ -473,6 +473,10 @@ Promise.all([
   return data;
 })
 .then(function(data) {
+  d3.select("#loading").style("display", "none");
+  d3.select("#map").style("display", "block");
+  d3.select("#legend").style("display", "block");
+
   var plot = scrollVis();
 
   d3.select('#vis')

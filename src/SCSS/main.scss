@@ -31,6 +31,12 @@ header{
 }
 
 #scrolling-vis{
+  margin-top: 60px;
+
+  #loading{
+    margin-top: 150px;
+  }
+
   #vis{
     display: inline-block;
     position: sticky;
@@ -85,7 +91,7 @@ section.step {
   margin-bottom: 200px;
 
   &:first-of-type{
-    margin-top: 200px;
+    margin-top: 150px;
   }
 
   &:last-of-type{
