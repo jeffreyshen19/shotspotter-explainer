@@ -109,7 +109,10 @@ var scrollVis = function () {
             radius: 4,
             fillColor: colors.black,
             weight: 0,
+            opacity: 1,
+            fillOpacity: 1
           }
+          break;
       }
 
       // Render based off point or polygon
@@ -152,12 +155,6 @@ var scrollVis = function () {
 
     // Fit
     map.fitBounds(layers.kcBoundaries.getBounds());
-    layers.kcccFocus.maxFill = 1;
-    layers.kcUrbanRenewalAreas.maxFill = 1;
-    layers.troostAve.maxFill = 1;
-    layers.kcMaxBusLines.maxFill = 1;
-    layers.kccc39.maxFill = 1;
-    layers.kcBGsWithData.maxFill = 1;
     layers.kcShotSpotterActivations.isScaled = false;
     layers.kcShotSpotterActivations.isVisible = false;
 
@@ -300,7 +297,7 @@ var scrollVis = function () {
       d3.select("#legend-5").style("display", "inline-block");
       showLayer(layers.kcUrbanRenewalAreas);
       hideLayer(layers.kcccFocus);
-      map.removeLayer(layers.kcccFocus);
+      hideLayer(layers.kccc39);
     };
     updateFunctions[17] = function(){};
 
@@ -424,7 +421,7 @@ var scrollVis = function () {
   }
 
   function showLayer(layer){
-    layer.setStyle({"fillOpacity": layer.maxFill, "opacity": 1});
+    layer.setStyle({"fillOpacity": 1, "opacity": 1});
   }
 
   function hideLayer(layer){
