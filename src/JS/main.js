@@ -191,13 +191,13 @@ var scrollVis = function () {
     activateFunctions[1] = function(){
       map.flyToBounds(layers.kcShotSpotterApproxCoverageArea.getBounds(), {padding: [5, 5]});
       hideShotSpotterActivations();
-      d3.select("#legend-3").style("display", "none");
+      hideLegend("#legend-3");
     };
     updateFunctions[1] = function(){};
 
     activateFunctions[2] = function(){
       showShotSpotterActivations(false);
-      d3.select("#legend-3").style("display", "inline-block");
+      showLegend("#legend-3");
       d3.select("#chloropleth-legend").style("opacity", "0");
     };
     updateFunctions[2] = function(){};
@@ -226,7 +226,7 @@ var scrollVis = function () {
     updateFunctions[7] = function(){};
 
     activateFunctions[8] = function(){
-      d3.select("#legend-3").style("display", "none");
+      hideLegend("#legend-3");
       map.flyToBounds(layers.kcBoundaries.getBounds());
       hideShotSpotterActivations();
       generateChloropleth([0, data.maxViolentCrimeRate], [colors.white, colors.black], "VIOLENT CRIME RATE", "Violent Crime per 1k People", (x) => Math.round(x * 1000));
@@ -254,13 +254,13 @@ var scrollVis = function () {
 
     activateFunctions[11] = function(){
       hideChloropleth();
-      d3.select("#legend-4").style("display", "none");
+      hideLegend("#legend-4");
       hideLayer(layers.kcMaxBusLines);
     };
     updateFunctions[11] = function(){};
     //
     activateFunctions[12] = function(){
-      d3.select("#legend-4").style("display", "inline-block");
+      showLegend("#legend-4");
       showLayer(layers.kcMaxBusLines);
       layers.kcShotSpotterApproxCoverageArea.bringToFront();
       hideLayer(layers.troostAve);
@@ -269,7 +269,7 @@ var scrollVis = function () {
 
     activateFunctions[13] = function(){
       hideLayer(layers.kcMaxBusLines);
-      d3.select("#legend-4").style("display", "none");
+      hideLegend("#legend-4");
       showLayer(layers.troostAve);
       layers.kcShotSpotterApproxCoverageArea.bringToFront();
     };
@@ -288,13 +288,13 @@ var scrollVis = function () {
     activateFunctions[16] = function(){
       hideLayer(layers.kcUrbanRenewalAreas);
       generateChloropleth([0, 1], [colors.white, colors.blue], "PCT_BLACK", "Percent Black", (x) => Math.round(x * 100) + "%");
-      d3.select("#legend-5").style("display", "none");
+      hideLegend("#legend-5");
     };
     updateFunctions[16] = function(){};
 
     activateFunctions[17] = function(){
       hideChloropleth();
-      d3.select("#legend-5").style("display", "inline-block");
+      showLegend("#legend-5");
       showLayer(layers.kcUrbanRenewalAreas);
       hideLayer(layers.kcccFocus);
       hideLayer(layers.kccc39);
@@ -313,12 +313,12 @@ var scrollVis = function () {
       showLayer(layers.kcUrbanRenewalAreas);
       showLayer(layers.troostAve);
       showLayer(layers.kccc39);
-      d3.select("#legend-5").style("display", "inline-block");
+      showLegend("#legend-5");
     };
     updateFunctions[19] = function(){};
 
     activateFunctions[20] = function(){
-      d3.select("#legend-5").style("display", "none");
+      hideLegend("#legend-5");
       hideLayer(layers.kcccFocus);
       hideLayer(layers.kcUrbanRenewalAreas);
       hideLayer(layers.troostAve);
@@ -342,6 +342,14 @@ var scrollVis = function () {
     activateFunctions[24] = function(){};
     updateFunctions[24] = function(){};
   };
+
+  function showLegend(id){
+    d3.select(id).style("display", "inline-block").style("opacity", 1);
+  }
+
+  function hideLegend(id){
+    d3.select(id).style("display", "none").style("opacity", 0);
+  }
 
   //TODO await
   function showShotSpotterActivations(scale){
