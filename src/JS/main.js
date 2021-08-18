@@ -52,7 +52,7 @@ var scrollVis = function () {
     });
 
     // Initialize geoJSON layers
-    for(let key in data){
+    for(let key in data.layers){
       let style = {};
 
       // Styling options
@@ -111,21 +111,20 @@ var scrollVis = function () {
         case "troostAve":
         case "kccc39":
         case "kcShotSpotterApproxCoverageArea":
-          layers[key] = L.geoJSON(data[key], {
+          layers[key] = L.geoJSON(data.layers[key], {
             style: style
           });
           break;
-        case "kcEvictions":
         case "kcUrbanRenewalAreas":
         case "kcShotSpotterActivations":
-          layers[key] = L.geoJSON(data[key], {
+          layers[key] = L.geoJSON(data.layers[key], {
             pointToLayer: function (feature, latlng) {
                 return L.circleMarker(latlng, style);
             }
           });
           break;
         case "kcccFocus":
-          layers[key] = L.geoJSON(data[key], {
+          layers[key] = L.geoJSON(data.layers[key], {
             pointToLayer: function (feature, latlng) {
               return L.circleMarker(latlng, style).bindTooltip(feature.properties.label, {
                 permanent: true,
@@ -136,18 +135,11 @@ var scrollVis = function () {
           break;
       }
 
+      layers[key].addTo(map);
     }
 
     // Fit
     map.fitBounds(layers.kcBoundaries.getBounds());
-    layers.kcShotSpotterActivations.addTo(map);
-    layers.kcBGsWithData.addTo(map);
-    layers.kcccFocus.addTo(map);
-    layers.kcUrbanRenewalAreas.addTo(map);
-    layers.troostAve.addTo(map);
-    layers.kcMaxBusLines.addTo(map);
-    layers.kccc39.addTo(map);
-
     layers.kcShotSpotterActivations.setStyle({"opacity": 0, "fillOpacity": 0});
     layers.kcccFocus.setStyle({"opacity": 0, "fillOpacity": 0});
     layers.kcUrbanRenewalAreas.setStyle({"opacity": 0, "fillOpacity": 0});
@@ -193,8 +185,6 @@ var scrollVis = function () {
   // Handles display logic for sections
   var setupSections = function (data) {
     activateFunctions[0] = function(){
-      layers.kcShotSpotterApproxCoverageArea.addTo(map);
-      layers.kcBoundaries.addTo(map);
       map.flyToBounds(layers.kcBoundaries.getBounds());
     };
     updateFunctions[0] = function(){};
@@ -497,7 +487,7 @@ Promise.all([
   d3.json("data/public/kccc-39.geojson"),
   d3.json("data/public/kccc-areas.geojson"),
 ]).then(function(data){ // Process data
-  data = {
+  let layers = {
     "kcBGsWithData": data[0],
     "kcBoundaries": data[1],
     "kcMaxBusLines": data[2],
@@ -511,7 +501,7 @@ Promise.all([
 
   // Cast to real
   let maxViolentCrimeRate = 0;
-  data.kcBGsWithData.features = data.kcBGsWithData.features.map(function(feature){
+  layers.kcBGsWithData.features = layers.kcBGsWithData.features.map(function(feature){
     ["2013 MEDIAN GROSS RENT", "2013 PCT BLACK", "2013 PCT HISPANIC", "2013 PCT WHITE", "2019 MEDIAN GROSS RENT", "PCT_BLACK", "PCT_HISPANIC", "PCT_WHITE", "TOTAL"].forEach(function(key){
       feature.properties[key] = parseFloat(feature.properties[key]);
       maxViolentCrimeRate = Math.max(maxViolentCrimeRate, feature.properties["VIOLENT CRIME RATE"])
@@ -519,9 +509,10 @@ Promise.all([
     return feature;
   });
 
-  data.maxViolentCrimeRate = maxViolentCrimeRate;
-
-  return data;
+  return {
+    maxViolentCrimeRate: maxViolentCrimeRate,
+    layers: layers
+  };
 })
 .then(function(data) {
 
