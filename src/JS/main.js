@@ -561,6 +561,7 @@ Promise.all([
   };
 })
 .then(function(data) {
+  window.scrollTo(0,0);
 
   var plot = scrollVis();
 
