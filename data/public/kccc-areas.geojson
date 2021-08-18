@@ -1,0 +1,9 @@
+{
+"type": "FeatureCollection",
+"name": "kccc-areas",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "lat": 39.069872, "lng": -94.552827, "label": "31st & Prospect" }, "geometry": { "type": "Point", "coordinates": [ -94.552827, 39.069872 ] } },
+{ "type": "Feature", "properties": { "lat": 39.070495, "lng": -94.571334, "label": "31st & Troost" }, "geometry": { "type": "Point", "coordinates": [ -94.571334, 39.070495 ] } }
+]
+}
