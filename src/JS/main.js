@@ -188,24 +188,24 @@ var scrollVis = function () {
     };
     updateFunctions[0] = function(){};
 
-    activateFunctions[1] = function(){
+    activateFunctions[1] = async function(){
       map.flyToBounds(layers.kcShotSpotterApproxCoverageArea.getBounds(), {padding: [5, 5]});
-      hideShotSpotterActivations();
       hideLegend("#legend-3");
+      await hideShotSpotterActivations();
     };
     updateFunctions[1] = function(){};
 
-    activateFunctions[2] = function(){
-      showShotSpotterActivations(false);
+    activateFunctions[2] = async function(){
       showLegend("#legend-3");
       d3.select("#chloropleth-legend").style("opacity", "0");
+      await showShotSpotterActivations(false);
     };
     updateFunctions[2] = function(){};
 
-    activateFunctions[3] = function(){
+    activateFunctions[3] = async function(){
       let i = 0;
-      showShotSpotterActivations(true);
       showShotSpotterLegend();
+      await showShotSpotterActivations(true);
     };
 
     updateFunctions[3] = function(){};
@@ -217,19 +217,19 @@ var scrollVis = function () {
     activateFunctions[6] = function(){};
     updateFunctions[6] = function(){};
 
-    activateFunctions[7] = function(){
+    activateFunctions[7] = async function(){
       hideChloropleth();
       showShotSpotterLegend();
       map.flyToBounds(layers.kcShotSpotterApproxCoverageArea.getBounds(), {padding: [5, 5]});
-      showShotSpotterActivations(true);
+      await showShotSpotterActivations(true);
     };
     updateFunctions[7] = function(){};
 
-    activateFunctions[8] = function(){
+    activateFunctions[8] = async function(){
       hideLegend("#legend-3");
       map.flyToBounds(layers.kcBoundaries.getBounds());
-      hideShotSpotterActivations();
       generateChloropleth([0, data.maxViolentCrimeRate], [colors.white, colors.black], "VIOLENT CRIME RATE", "Violent Crime per 1k People", (x) => Math.round(x * 1000));
+      await hideShotSpotterActivations();
     };
     updateFunctions[8] = function(){};
 
@@ -351,39 +351,45 @@ var scrollVis = function () {
     d3.select(id).style("display", "none").style("opacity", 0);
   }
 
-  //TODO await
-  function showShotSpotterActivations(scale){
-    let i = 0;
-    let interval = setInterval(function(){
-      if(!layers.kcShotSpotterActivations.isVisible) layers.kcShotSpotterActivations.setStyle({"fillOpacity": i / ANIMATION_LENGTH * 0.5, "opacity": i / ANIMATION_LENGTH});
-      layers.kcShotSpotterActivations.eachLayer(function (marker) {
-        let radius;
+  async function showShotSpotterActivations(scale){
+    return new Promise((resolve, reject) => {
+      let i = 0;
+      let interval = setInterval(function(){
+        if(!layers.kcShotSpotterActivations.isVisible) layers.kcShotSpotterActivations.setStyle({"fillOpacity": i / ANIMATION_LENGTH * 0.5, "opacity": i / ANIMATION_LENGTH});
+        layers.kcShotSpotterActivations.eachLayer(function (marker) {
+          let radius;
 
-        if(scale) radius = 2 * Math.max(Math.sqrt(i / ANIMATION_LENGTH * marker.feature.properties.Activations), 1);
-        else radius = 2 * Math.max(Math.sqrt((1 - i / ANIMATION_LENGTH) * marker.feature.properties.Activations), 1);
+          if(scale) radius = 2 * Math.max(Math.sqrt(i / ANIMATION_LENGTH * marker.feature.properties.Activations), 1);
+          else radius = 2 * Math.max(Math.sqrt((1 - i / ANIMATION_LENGTH) * marker.feature.properties.Activations), 1);
 
-        if(scale && !layers.kcShotSpotterActivations.isScaled) marker.setRadius(radius);
-        else if(!scale && layers.kcShotSpotterActivations.isScaled) marker.setRadius(radius);
-      });
-      if(i >= ANIMATION_LENGTH) {
-        clearInterval(interval);
-        layers.kcShotSpotterActivations.isVisible = true;
-        layers.kcShotSpotterActivations.isScaled = scale;
-      }
-      i += ANIMATION_STEP;
-    }, ANIMATION_STEP);
+          if(scale && !layers.kcShotSpotterActivations.isScaled) marker.setRadius(radius);
+          else if(!scale && layers.kcShotSpotterActivations.isScaled) marker.setRadius(radius);
+        });
+        if(i >= ANIMATION_LENGTH) {
+          clearInterval(interval);
+          layers.kcShotSpotterActivations.isVisible = true;
+          layers.kcShotSpotterActivations.isScaled = scale;
+          resolve();
+        }
+        i += ANIMATION_STEP;
+      }, ANIMATION_STEP);
+    });
+
   }
 
-  function hideShotSpotterActivations(){
-    let i = 0;
-    let interval = setInterval(function(){
-      if(layers.kcShotSpotterActivations.isVisible) layers.kcShotSpotterActivations.setStyle({"fillOpacity": 0.5 - i / ANIMATION_LENGTH * 0.5, "opacity": 1 - i / ANIMATION_LENGTH});
-      if(i >= ANIMATION_LENGTH) {
-        clearInterval(interval);
-        layers.kcShotSpotterActivations.isVisible = false;
-      }
-      i += ANIMATION_STEP;
-    }, ANIMATION_STEP);
+  async function hideShotSpotterActivations(){
+    return new Promise((resolve, reject) => {
+      let i = 0;
+      let interval = setInterval(function(){
+        if(layers.kcShotSpotterActivations.isVisible) layers.kcShotSpotterActivations.setStyle({"fillOpacity": 0.5 - i / ANIMATION_LENGTH * 0.5, "opacity": 1 - i / ANIMATION_LENGTH});
+        if(i >= ANIMATION_LENGTH) {
+          clearInterval(interval);
+          layers.kcShotSpotterActivations.isVisible = false;
+          resolve();
+        }
+        i += ANIMATION_STEP;
+      }, ANIMATION_STEP);
+    });
   }
 
   function generateChloropleth(domain, range, column, legendTitle, format, diverging){
