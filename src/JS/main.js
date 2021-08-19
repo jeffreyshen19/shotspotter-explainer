@@ -89,7 +89,7 @@ var scrollVis = function () {
             "color": colors.red,
             "weight": 2,
             "opacity": 0.7,
-            "fillOpacity": 0,
+            "fillOpacity": 0.05,
           };
           break;
         case "kcShotSpotterActivations":
