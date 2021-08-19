@@ -114,3 +114,47 @@ section.step {
     margin-bottom: 200px;
   }
 }
+
+
+@media screen and (max-width: 768px){
+  .container{
+    width: 95%;
+    margin: 0 auto;
+    padding: 40px 20px 0;
+  }
+
+  #scrolling-vis {
+    #vis {
+      display: block;
+      top: 20px;
+    }
+
+    #sections{
+      z-index: 314160;
+      width: 95%;
+      margin: -300px auto;
+      display: block;
+      top: 0;
+      position: relative;
+
+      section{
+        background: white;
+        padding: 10px 20px;
+        visibility: hidden;
+        border-radius: 5px
+      }
+
+      section.step:first-of-type{
+        margin-top: 0px;
+      }
+
+
+      section.active{
+        visibility: visible;
+        box-shadow: 0 0 10px #888888;
+      }
+    }
+
+    margin-bottom: 300px;
+  }
+}
