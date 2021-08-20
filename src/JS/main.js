@@ -186,57 +186,57 @@ var scrollVis = function () {
 
   // Handles display logic for sections
   var setupSections = function (data) {
-    activateFunctions[0] = async function(){
+    activateFunctions[0] = function(){
       map.flyToBounds(layers.kcBoundaries.getBounds());
     };
     updateFunctions[0] = function(){};
 
-    activateFunctions[1] = async function(){
+    activateFunctions[1] = function(){
       map.flyToBounds(layers.kcShotSpotterApproxCoverageArea.getBounds(), {padding: [5, 5]});
       hideLegend("#legend-3");
-      await hideShotSpotterActivations();
+      hideShotSpotterActivations();
     };
     updateFunctions[1] = function(){};
 
-    activateFunctions[2] = async function(){
+    activateFunctions[2] = function(){
       showLegend("#legend-3");
       d3.select("#chloropleth-legend").style("opacity", "0");
-      await showShotSpotterActivations(false);
+      showShotSpotterActivations(false);
     };
     updateFunctions[2] = function(){};
 
-    activateFunctions[3] = async function(){
+    activateFunctions[3] = function(){
       let i = 0;
       showShotSpotterLegend();
-      await showShotSpotterActivations(true);
+      showShotSpotterActivations(true);
     };
 
     updateFunctions[3] = function(){};
 
-    activateFunctions[4] = async function(){};
+    activateFunctions[4] = function(){};
     updateFunctions[4] = function(){};
-    activateFunctions[5] = async function(){};
+    activateFunctions[5] = function(){};
     updateFunctions[5] = function(){};
-    activateFunctions[6] = async function(){};
+    activateFunctions[6] = function(){};
     updateFunctions[6] = function(){};
 
-    activateFunctions[7] = async function(){
+    activateFunctions[7] = function(){
       hideChloropleth();
       showShotSpotterLegend();
       map.flyToBounds(layers.kcShotSpotterApproxCoverageArea.getBounds(), {padding: [5, 5]});
-      await showShotSpotterActivations(true);
+      showShotSpotterActivations(true);
     };
     updateFunctions[7] = function(){};
 
-    activateFunctions[8] = async function(){
+    activateFunctions[8] = function(){
       hideLegend("#legend-3");
       map.flyToBounds(layers.kcBoundaries.getBounds());
       generateChloropleth([0, data.maxViolentCrimeRate], [colors.white, colors.black], "VIOLENT CRIME RATE", "Violent Crime per 1k People", (x) => Math.round(x * 1000));
-      await hideShotSpotterActivations();
+      hideShotSpotterActivations();
     };
     updateFunctions[8] = function(){};
 
-    activateFunctions[9] = async function(){
+    activateFunctions[9] = function(){
       map.flyToBounds([
         [39.152465, -94.609998],
         [39.018955, -94.509757]
@@ -245,7 +245,7 @@ var scrollVis = function () {
     };
     updateFunctions[9] = function(){};
 
-    activateFunctions[10] = async function(){
+    activateFunctions[10] = function(){
       generateChloropleth([0, data.maxViolentCrimeRate], [colors.white, colors.black], "VIOLENT CRIME RATE", "Violent Crime per 1k People", (x) => Math.round(x * 1000));
       layers.kcBGsWithData.eachLayer(function (layer) {
         if(layer.feature.properties.GEOID == '290950034002') {
@@ -255,14 +255,14 @@ var scrollVis = function () {
     };
     updateFunctions[10] = function(){};
 
-    activateFunctions[11] = async function(){
+    activateFunctions[11] = function(){
       hideChloropleth();
       hideLegend("#legend-4");
       hideLayer(layers.kcMaxBusLines);
     };
     updateFunctions[11] = function(){};
     //
-    activateFunctions[12] = async function(){
+    activateFunctions[12] = function(){
       showLegend("#legend-4");
       showLayer(layers.kcMaxBusLines);
       layers.kcShotSpotterApproxCoverageArea.bringToFront();
@@ -271,7 +271,7 @@ var scrollVis = function () {
     };
     updateFunctions[12] = function(){};
 
-    activateFunctions[13] = async function(){
+    activateFunctions[13] = function(){
       hideLayer(layers.kcMaxBusLines);
       hideLegend("#legend-4");
       showLayer(layers.troostAve);
@@ -280,24 +280,24 @@ var scrollVis = function () {
     };
     updateFunctions[13] = function(){};
 
-    activateFunctions[14] = async function(){
+    activateFunctions[14] = function(){
       hideChloropleth();
     };
     updateFunctions[14] = function(){};
 
-    activateFunctions[15] = async function(){
+    activateFunctions[15] = function(){
       generateChloropleth([0, 1], [colors.white, colors.blue], "PCT_BLACK", "Percent Black", (x) => Math.round(x * 100) + "%");
     };
     updateFunctions[15] = function(){};
 
-    activateFunctions[16] = async function(){
+    activateFunctions[16] = function(){
       hideLayer(layers.kcUrbanRenewalAreas);
       generateChloropleth([0, 1], [colors.white, colors.blue], "PCT_BLACK", "Percent Black", (x) => Math.round(x * 100) + "%");
       hideLegend("#legend-5");
     };
     updateFunctions[16] = function(){};
 
-    activateFunctions[17] = async function(){
+    activateFunctions[17] = function(){
       hideChloropleth();
       showLegend("#legend-5");
       d3.selectAll(".focus-tooltip").style("visibility", "hidden");
@@ -308,7 +308,7 @@ var scrollVis = function () {
     };
     updateFunctions[17] = function(){};
 
-    activateFunctions[18] = async function(){
+    activateFunctions[18] = function(){
       d3.selectAll(".focus-tooltip").style("visibility", "visible");
       d3.select(".tooltip-39").style("visibility", "visible");
       showLayer(layers.kccc39);
@@ -316,7 +316,7 @@ var scrollVis = function () {
     };
     updateFunctions[18] = function(){};
 
-    activateFunctions[19] = async function(){
+    activateFunctions[19] = function(){
       hideChloropleth();
       showLayer(layers.kcccFocus);
       showLayer(layers.kcUrbanRenewalAreas);
@@ -329,7 +329,7 @@ var scrollVis = function () {
     };
     updateFunctions[19] = function(){};
 
-    activateFunctions[20] = async function(){
+    activateFunctions[20] = function(){
       hideLegend("#legend-5");
       hideLayer(layers.kcccFocus);
       hideLayer(layers.kcUrbanRenewalAreas);
@@ -342,17 +342,17 @@ var scrollVis = function () {
     };
     updateFunctions[20] = function(){};
 
-    activateFunctions[21] = async function(){
+    activateFunctions[21] = function(){
       generateChloropleth([0, 25], [colors.white, colors.red], "eviction.rate", "Eviction Rate", (x) => Math.round(x) + "%");
     };
     updateFunctions[21] = function(){};
 
-    activateFunctions[22] = async function(){
+    activateFunctions[22] = function(){
       generateChloropleth([-0.5, 0, 0.5], [colors.red, colors.white, colors.blue], "PCT_CHANGE_BLACK", "Pct. Change Black Population", (x) => Math.round(x * 100) + "%",true);
     };
     updateFunctions[22] = function(){};
 
-    activateFunctions[23] = async function(){
+    activateFunctions[23] = function(){
       generateChloropleth([-0.5, 0, 0.5], [colors.red, colors.white, colors.blue], "PCT_CHANGE_WHITE", "Pct. Change White Population", (x) => Math.round(x * 100) + "%",true);
     };
     updateFunctions[23] = function(){};
@@ -366,45 +366,47 @@ var scrollVis = function () {
     d3.select(id).style("display", "none").style("opacity", 0);
   }
 
-  async function showShotSpotterActivations(scale){
-    return new Promise((resolve, reject) => {
-      let i = 0;
-      let interval = setInterval(function(){
-        if(!layers.kcShotSpotterActivations.isVisible) layers.kcShotSpotterActivations.setStyle({"fillOpacity": i / ANIMATION_LENGTH * 0.5, "opacity": i / ANIMATION_LENGTH});
-        layers.kcShotSpotterActivations.eachLayer(function (marker) {
-          let radius;
+  function showShotSpotterActivations(scale){
+    let i = 0, toShow = !layers.kcShotSpotterActivations.isVisible, toScale = layers.kcShotSpotterActivations.isScaled != scale;
 
-          if(scale) radius = 2 * Math.max(Math.sqrt(i / ANIMATION_LENGTH * marker.feature.properties.Activations), 1);
-          else radius = 2 * Math.max(Math.sqrt((1 - i / ANIMATION_LENGTH) * marker.feature.properties.Activations), 1);
+    if(!toScale && !toShow) return;
 
-          if(scale && !layers.kcShotSpotterActivations.isScaled) marker.setRadius(radius);
-          else if(!scale && layers.kcShotSpotterActivations.isScaled) marker.setRadius(radius);
-        });
-        if(i >= ANIMATION_LENGTH) {
-          clearInterval(interval);
-          layers.kcShotSpotterActivations.isVisible = true;
-          layers.kcShotSpotterActivations.isScaled = scale;
-          resolve();
-        }
-        i += ANIMATION_STEP;
-      }, ANIMATION_STEP);
-    });
+    layers.kcShotSpotterActivations.isVisible = true;
+    layers.kcShotSpotterActivations.isScaled = scale;
 
+    let interval = setInterval(function(){
+      if(toShow) layers.kcShotSpotterActivations.setStyle({"fillOpacity": i / ANIMATION_LENGTH * 0.5, "opacity": i / ANIMATION_LENGTH});
+
+      layers.kcShotSpotterActivations.eachLayer(function (marker) {
+        let radius;
+
+        if(scale) radius = 2 * Math.max(Math.sqrt(i / ANIMATION_LENGTH * marker.feature.properties.Activations), 1);
+        else radius = 2 * Math.max(Math.sqrt((1 - i / ANIMATION_LENGTH) * marker.feature.properties.Activations), 1);
+
+        if(toScale) marker.setRadius(radius);
+      });
+      if(i >= ANIMATION_LENGTH) {
+        clearInterval(interval);
+      }
+      i += ANIMATION_STEP;
+    }, ANIMATION_STEP);
   }
 
-  async function hideShotSpotterActivations(){
-    return new Promise((resolve, reject) => {
-      let i = 0;
-      let interval = setInterval(function(){
-        if(layers.kcShotSpotterActivations.isVisible) layers.kcShotSpotterActivations.setStyle({"fillOpacity": 0.5 - i / ANIMATION_LENGTH * 0.5, "opacity": 1 - i / ANIMATION_LENGTH});
-        if(i >= ANIMATION_LENGTH) {
-          clearInterval(interval);
-          layers.kcShotSpotterActivations.isVisible = false;
-          resolve();
-        }
-        i += ANIMATION_STEP;
-      }, ANIMATION_STEP);
-    });
+  function hideShotSpotterActivations(){
+    let toHide = layers.kcShotSpotterActivations.isVisible;
+
+    if(!toHide) return;
+
+    layers.kcShotSpotterActivations.isVisible = false;
+
+    let i = 0;
+    let interval = setInterval(function(){
+      layers.kcShotSpotterActivations.setStyle({"fillOpacity": 0.5 - i / ANIMATION_LENGTH * 0.5, "opacity": 1 - i / ANIMATION_LENGTH});
+      if(i >= ANIMATION_LENGTH) {
+        clearInterval(interval);
+      }
+      i += ANIMATION_STEP;
+    }, ANIMATION_STEP);
   }
 
   function generateChloropleth(domain, range, column, legendTitle, format, diverging){
@@ -493,12 +495,12 @@ var scrollVis = function () {
    *
    * @param index - index of the activated section
    */
-  chart.activate = async function (index) {
+  chart.activate = function (index) {
     activeIndex = index;
     var sign = (activeIndex - lastIndex) < 0 ? -1 : 1;
     var scrolledSections = d3.range(lastIndex + sign, activeIndex + sign, sign);
     for (const i of scrolledSections) {
-      await activateFunctions[i]();
+      activateFunctions[i]();
     }
     lastIndex = activeIndex;
   };
@@ -573,12 +575,12 @@ Promise.all([
 
   scroll(d3.selectAll('.step'));
 
-  scroll.on('active', async function (index) {
+  scroll.on('active', function (index) {
     d3.selectAll('.step')
       .classed("active", function (d, i) { return i === index })
       .style('opacity', function (d, i) { return i === index ? 1 : 0.1; });
 
-    await plot.activate(index);
+    plot.activate(index);
   });
 
   // TODO: remove
