@@ -186,12 +186,13 @@ var scrollVis = function () {
 
   // Handles display logic for sections
   var setupSections = function (data) {
-    activateFunctions[0] = function(){
+    activateFunctions[0] = async function(){
       map.flyToBounds(layers.kcBoundaries.getBounds());
     };
     updateFunctions[0] = function(){};
 
     activateFunctions[1] = async function(){
+      console.log("calling 1");
       map.flyToBounds(layers.kcShotSpotterApproxCoverageArea.getBounds(), {padding: [5, 5]});
       hideLegend("#legend-3");
       await hideShotSpotterActivations();
@@ -199,6 +200,7 @@ var scrollVis = function () {
     updateFunctions[1] = function(){};
 
     activateFunctions[2] = async function(){
+      console.log("calling 2");
       showLegend("#legend-3");
       d3.select("#chloropleth-legend").style("opacity", "0");
       await showShotSpotterActivations(false);
@@ -213,11 +215,11 @@ var scrollVis = function () {
 
     updateFunctions[3] = function(){};
 
-    activateFunctions[4] = function(){};
+    activateFunctions[4] = async function(){};
     updateFunctions[4] = function(){};
-    activateFunctions[5] = function(){};
+    activateFunctions[5] = async function(){};
     updateFunctions[5] = function(){};
-    activateFunctions[6] = function(){};
+    activateFunctions[6] = async function(){};
     updateFunctions[6] = function(){};
 
     activateFunctions[7] = async function(){
@@ -236,7 +238,7 @@ var scrollVis = function () {
     };
     updateFunctions[8] = function(){};
 
-    activateFunctions[9] = function(){
+    activateFunctions[9] = async function(){
       map.flyToBounds([
         [39.152465, -94.609998],
         [39.018955, -94.509757]
@@ -245,7 +247,7 @@ var scrollVis = function () {
     };
     updateFunctions[9] = function(){};
 
-    activateFunctions[10] = function(){
+    activateFunctions[10] = async function(){
       generateChloropleth([0, data.maxViolentCrimeRate], [colors.white, colors.black], "VIOLENT CRIME RATE", "Violent Crime per 1k People", (x) => Math.round(x * 1000));
       layers.kcBGsWithData.eachLayer(function (layer) {
         if(layer.feature.properties.GEOID == '290950034002') {
@@ -255,14 +257,14 @@ var scrollVis = function () {
     };
     updateFunctions[10] = function(){};
 
-    activateFunctions[11] = function(){
+    activateFunctions[11] = async function(){
       hideChloropleth();
       hideLegend("#legend-4");
       hideLayer(layers.kcMaxBusLines);
     };
     updateFunctions[11] = function(){};
     //
-    activateFunctions[12] = function(){
+    activateFunctions[12] = async function(){
       showLegend("#legend-4");
       showLayer(layers.kcMaxBusLines);
       layers.kcShotSpotterApproxCoverageArea.bringToFront();
@@ -271,7 +273,7 @@ var scrollVis = function () {
     };
     updateFunctions[12] = function(){};
 
-    activateFunctions[13] = function(){
+    activateFunctions[13] = async function(){
       hideLayer(layers.kcMaxBusLines);
       hideLegend("#legend-4");
       showLayer(layers.troostAve);
@@ -280,24 +282,24 @@ var scrollVis = function () {
     };
     updateFunctions[13] = function(){};
 
-    activateFunctions[14] = function(){
+    activateFunctions[14] = async function(){
       hideChloropleth();
     };
     updateFunctions[14] = function(){};
 
-    activateFunctions[15] = function(){
+    activateFunctions[15] = async function(){
       generateChloropleth([0, 1], [colors.white, colors.blue], "PCT_BLACK", "Percent Black", (x) => Math.round(x * 100) + "%");
     };
     updateFunctions[15] = function(){};
 
-    activateFunctions[16] = function(){
+    activateFunctions[16] = async function(){
       hideLayer(layers.kcUrbanRenewalAreas);
       generateChloropleth([0, 1], [colors.white, colors.blue], "PCT_BLACK", "Percent Black", (x) => Math.round(x * 100) + "%");
       hideLegend("#legend-5");
     };
     updateFunctions[16] = function(){};
 
-    activateFunctions[17] = function(){
+    activateFunctions[17] = async function(){
       hideChloropleth();
       showLegend("#legend-5");
       d3.selectAll(".focus-tooltip").style("visibility", "hidden");
@@ -308,7 +310,7 @@ var scrollVis = function () {
     };
     updateFunctions[17] = function(){};
 
-    activateFunctions[18] = function(){
+    activateFunctions[18] = async function(){
       d3.selectAll(".focus-tooltip").style("visibility", "visible");
       d3.select(".tooltip-39").style("visibility", "visible");
       showLayer(layers.kccc39);
@@ -316,7 +318,7 @@ var scrollVis = function () {
     };
     updateFunctions[18] = function(){};
 
-    activateFunctions[19] = function(){
+    activateFunctions[19] = async function(){
       hideChloropleth();
       showLayer(layers.kcccFocus);
       showLayer(layers.kcUrbanRenewalAreas);
@@ -329,7 +331,7 @@ var scrollVis = function () {
     };
     updateFunctions[19] = function(){};
 
-    activateFunctions[20] = function(){
+    activateFunctions[20] = async function(){
       hideLegend("#legend-5");
       hideLayer(layers.kcccFocus);
       hideLayer(layers.kcUrbanRenewalAreas);
@@ -342,20 +344,20 @@ var scrollVis = function () {
     };
     updateFunctions[20] = function(){};
 
-    activateFunctions[21] = function(){
+    activateFunctions[21] = async function(){
       generateChloropleth([0, 25], [colors.white, colors.red], "eviction.rate", "Eviction Rate", (x) => Math.round(x) + "%");
     };
     updateFunctions[21] = function(){};
 
-    activateFunctions[22] = function(){
+    activateFunctions[22] = async function(){
       generateChloropleth([-0.5, 0, 0.5], [colors.red, colors.white, colors.blue], "PCT_CHANGE_BLACK", "Pct. Change Black Population", (x) => Math.round(x * 100) + "%",true);
     };
     updateFunctions[22] = function(){};
 
-    activateFunctions[23] = function(){};
+    activateFunctions[23] = async function(){
+      generateChloropleth([-0.5, 0, 0.5], [colors.red, colors.white, colors.blue], "PCT_CHANGE_WHITE", "Pct. Change White Population", (x) => Math.round(x * 100) + "%",true);
+    };
     updateFunctions[23] = function(){};
-    activateFunctions[24] = function(){};
-    updateFunctions[24] = function(){};
   };
 
   function showLegend(id){
@@ -497,13 +499,13 @@ var scrollVis = function () {
    *
    * @param index - index of the activated section
    */
-  chart.activate = function (index) {
+  chart.activate = async function (index) {
     activeIndex = index;
     var sign = (activeIndex - lastIndex) < 0 ? -1 : 1;
     var scrolledSections = d3.range(lastIndex + sign, activeIndex + sign, sign);
-    scrolledSections.forEach(function (i) {
-      activateFunctions[i]();
-    });
+    for (const i of scrolledSections) {
+      await activateFunctions[i]();
+    }
     lastIndex = activeIndex;
   };
 
@@ -561,6 +563,9 @@ Promise.all([
   };
 })
 .then(function(data) {
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
   window.scrollTo(0,0);
 
   var plot = scrollVis();
