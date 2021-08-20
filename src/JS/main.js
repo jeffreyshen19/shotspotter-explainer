@@ -5,7 +5,7 @@ let width = document.getElementById("vis").offsetWidth - margin.left - margin.ri
 let map, histogram, histogramData, currentHistogram = -1;
 let layers = {};
 
-const ANIMATION_LENGTH = 300;
+const ANIMATION_LENGTH = 150;
 const ANIMATION_STEP = 10;
 
 const colors = {
@@ -192,7 +192,6 @@ var scrollVis = function () {
     updateFunctions[0] = function(){};
 
     activateFunctions[1] = async function(){
-      console.log("calling 1");
       map.flyToBounds(layers.kcShotSpotterApproxCoverageArea.getBounds(), {padding: [5, 5]});
       hideLegend("#legend-3");
       await hideShotSpotterActivations();
@@ -200,7 +199,6 @@ var scrollVis = function () {
     updateFunctions[1] = function(){};
 
     activateFunctions[2] = async function(){
-      console.log("calling 2");
       showLegend("#legend-3");
       d3.select("#chloropleth-legend").style("opacity", "0");
       await showShotSpotterActivations(false);
@@ -369,7 +367,6 @@ var scrollVis = function () {
   }
 
   async function showShotSpotterActivations(scale){
-    console.log("showing");
     return new Promise((resolve, reject) => {
       let i = 0;
       let interval = setInterval(function(){
@@ -387,7 +384,6 @@ var scrollVis = function () {
           clearInterval(interval);
           layers.kcShotSpotterActivations.isVisible = true;
           layers.kcShotSpotterActivations.isScaled = scale;
-          console.log("done showing");
           resolve();
         }
         i += ANIMATION_STEP;
@@ -397,7 +393,6 @@ var scrollVis = function () {
   }
 
   async function hideShotSpotterActivations(){
-    console.log("hiding");
     return new Promise((resolve, reject) => {
       let i = 0;
       let interval = setInterval(function(){
@@ -405,7 +400,6 @@ var scrollVis = function () {
         if(i >= ANIMATION_LENGTH) {
           clearInterval(interval);
           layers.kcShotSpotterActivations.isVisible = false;
-          console.log("done hiding");
           resolve();
         }
         i += ANIMATION_STEP;
@@ -563,10 +557,10 @@ Promise.all([
   };
 })
 .then(function(data) {
-  if ('scrollRestoration' in history) {
-    history.scrollRestoration = 'manual';
-  }
-  window.scrollTo(0,0);
+  // if ('scrollRestoration' in history) {
+  //   history.scrollRestoration = 'manual';
+  // }
+  // window.scrollTo(0,0);
 
   var plot = scrollVis();
 
@@ -579,29 +573,18 @@ Promise.all([
 
   scroll(d3.selectAll('.step'));
 
-  scroll.on('active', function (index) {
+  scroll.on('active', async function (index) {
     d3.selectAll('.step')
       .classed("active", function (d, i) { return i === index })
       .style('opacity', function (d, i) { return i === index ? 1 : 0.1; });
 
-    plot.activate(index);
+    await plot.activate(index);
   });
 
   // TODO: remove
   scroll.on('progress', function (index, progress) {
     plot.update(index, progress);
   });
-
-  // let resizeTimer;
-
-  // Handle Resize
-  // d3.select(window)
-  //   .on('resize', function(){
-    //   clearTimeout(resizeTimer);
-    //   resizeTimer = setTimeout(function() {
-    //     width = document.getElementById("vis").offsetWidth - margin.left - margin.right - 20;
-    //   }, 50);
-    // });
 
 }).catch(function(err) {
   // handle error here
